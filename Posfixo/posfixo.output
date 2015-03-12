@@ -1,177 +1,210 @@
-Terminals unused in grammar
+Não-terminais inúteis na gramática
+
+   logic1
+   logic2
+
+
+Terminais não utilizados na gramática
 
    OR
    ABRE_PARENTESES
    FECHA_PARENTESES
+   AND
+   IDENT_B
 
 
-Grammar
+Regras inúteis na gramática
 
-    0 $accept: expr $end
+    9 expressao: logic1
 
-    1 expr: expr MAIS termo
-    2     | expr MENOS termo
-    3     | termo
+   10 logic1: logic1 AND logic2
+   11       | logic1 OR logic2
 
-    4 termo: termo ASTERISCO fator
-    5      | termo DIV fator
-    6      | fator
-
-    7 fator: IDENT
+   12 logic2: IDENT_B
 
 
-Terminals, with rules where they appear
+Gramática
+
+    0 $accept: expressao $end
+
+    1 expressao: expr
+
+    2 expr: expr MAIS termo
+    3     | expr MENOS termo
+    4     | termo
+
+    5 termo: termo ASTERISCO fator
+    6      | termo DIV fator
+    7      | fator
+
+    8 fator: IDENT
+
+
+Terminais, com as regras onde eles aparecem
 
 $end (0) 0
 error (256)
-IDENT (258) 7
-MAIS (259) 1
-MENOS (260) 2
+IDENT (258) 8
+MAIS (259) 2
+MENOS (260) 3
 OR (261)
-ASTERISCO (262) 4
-DIV (263) 5
+ASTERISCO (262) 5
+DIV (263) 6
 ABRE_PARENTESES (264)
 FECHA_PARENTESES (265)
+AND (266)
+IDENT_B (267)
 
 
-Nonterminals, with rules where they appear
+Não-terminais com as regras onde eles aparecem
 
-$accept (11)
-    on left: 0
-expr (12)
-    on left: 1 2 3, on right: 0 1 2
-termo (13)
-    on left: 4 5 6, on right: 1 2 3 4 5
-fator (14)
-    on left: 7, on right: 4 5 6
+$accept (13)
+    à esquerda: 0
+expressao (14)
+    à esquerda: 1, à direita: 0
+expr (15)
+    à esquerda: 2 3 4, à direita: 1 2 3
+termo (16)
+    à esquerda: 5 6 7, à direita: 2 3 4 5 6
+fator (17)
+    à esquerda: 8, à direita: 5 6 7
 
 
 State 0
 
-    0 $accept: . expr $end
+    0 $accept: . expressao $end
 
-    IDENT  shift, and go to state 1
+    IDENT  deslocar, e ir ao estado 1
 
-    expr   go to state 2
-    termo  go to state 3
-    fator  go to state 4
+    expressao  ir ao estado 2
+    expr       ir ao estado 3
+    termo      ir ao estado 4
+    fator      ir ao estado 5
 
 
 State 1
 
-    7 fator: IDENT .
+    8 fator: IDENT .
 
-    $default  reduce using rule 7 (fator)
+    $padrão  reduzir usando a regra 8 (fator)
 
 
 State 2
 
-    0 $accept: expr . $end
-    1 expr: expr . MAIS termo
-    2     | expr . MENOS termo
+    0 $accept: expressao . $end
 
-    $end   shift, and go to state 5
-    MAIS   shift, and go to state 6
-    MENOS  shift, and go to state 7
+    $end  deslocar, e ir ao estado 6
 
 
 State 3
 
-    3 expr: termo .
-    4 termo: termo . ASTERISCO fator
-    5      | termo . DIV fator
+    1 expressao: expr .
+    2 expr: expr . MAIS termo
+    3     | expr . MENOS termo
 
-    ASTERISCO  shift, and go to state 8
-    DIV        shift, and go to state 9
+    MAIS   deslocar, e ir ao estado 7
+    MENOS  deslocar, e ir ao estado 8
 
-    $default  reduce using rule 3 (expr)
+    $padrão  reduzir usando a regra 1 (expressao)
 
 
 State 4
 
-    6 termo: fator .
+    4 expr: termo .
+    5 termo: termo . ASTERISCO fator
+    6      | termo . DIV fator
 
-    $default  reduce using rule 6 (termo)
+    ASTERISCO  deslocar, e ir ao estado 9
+    DIV        deslocar, e ir ao estado 10
+
+    $padrão  reduzir usando a regra 4 (expr)
 
 
 State 5
 
-    0 $accept: expr $end .
+    7 termo: fator .
 
-    $default  accept
+    $padrão  reduzir usando a regra 7 (termo)
 
 
 State 6
 
-    1 expr: expr MAIS . termo
+    0 $accept: expressao $end .
 
-    IDENT  shift, and go to state 1
-
-    termo  go to state 10
-    fator  go to state 4
+    $padrão  aceitar
 
 
 State 7
 
-    2 expr: expr MENOS . termo
+    2 expr: expr MAIS . termo
 
-    IDENT  shift, and go to state 1
+    IDENT  deslocar, e ir ao estado 1
 
-    termo  go to state 11
-    fator  go to state 4
+    termo  ir ao estado 11
+    fator  ir ao estado 5
 
 
 State 8
 
-    4 termo: termo ASTERISCO . fator
+    3 expr: expr MENOS . termo
 
-    IDENT  shift, and go to state 1
+    IDENT  deslocar, e ir ao estado 1
 
-    fator  go to state 12
+    termo  ir ao estado 12
+    fator  ir ao estado 5
 
 
 State 9
 
-    5 termo: termo DIV . fator
+    5 termo: termo ASTERISCO . fator
 
-    IDENT  shift, and go to state 1
+    IDENT  deslocar, e ir ao estado 1
 
-    fator  go to state 13
+    fator  ir ao estado 13
 
 
 State 10
 
-    1 expr: expr MAIS termo .
-    4 termo: termo . ASTERISCO fator
-    5      | termo . DIV fator
+    6 termo: termo DIV . fator
 
-    ASTERISCO  shift, and go to state 8
-    DIV        shift, and go to state 9
+    IDENT  deslocar, e ir ao estado 1
 
-    $default  reduce using rule 1 (expr)
+    fator  ir ao estado 14
 
 
 State 11
 
-    2 expr: expr MENOS termo .
-    4 termo: termo . ASTERISCO fator
-    5      | termo . DIV fator
+    2 expr: expr MAIS termo .
+    5 termo: termo . ASTERISCO fator
+    6      | termo . DIV fator
 
-    ASTERISCO  shift, and go to state 8
-    DIV        shift, and go to state 9
+    ASTERISCO  deslocar, e ir ao estado 9
+    DIV        deslocar, e ir ao estado 10
 
-    $default  reduce using rule 2 (expr)
+    $padrão  reduzir usando a regra 2 (expr)
 
 
 State 12
 
-    4 termo: termo ASTERISCO fator .
+    3 expr: expr MENOS termo .
+    5 termo: termo . ASTERISCO fator
+    6      | termo . DIV fator
 
-    $default  reduce using rule 4 (termo)
+    ASTERISCO  deslocar, e ir ao estado 9
+    DIV        deslocar, e ir ao estado 10
+
+    $padrão  reduzir usando a regra 3 (expr)
 
 
 State 13
 
-    5 termo: termo DIV fator .
+    5 termo: termo ASTERISCO fator .
 
-    $default  reduce using rule 5 (termo)
+    $padrão  reduzir usando a regra 5 (termo)
+
+
+State 14
+
+    6 termo: termo DIV fator .
+
+    $padrão  reduzir usando a regra 6 (termo)

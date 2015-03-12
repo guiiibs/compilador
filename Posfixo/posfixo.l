@@ -11,6 +11,10 @@
 \*    { return ASTERISCO;  }
 \/    { return DIV;  }
 a     { return IDENT;   }
+b	  { return IDENT_B; }
+and   { return AND; }
+or	  { return OR;  }
+
 
 %%
 

@@ -52,7 +52,9 @@ extern int yydebug;
     ASTERISCO = 262,
     DIV = 263,
     ABRE_PARENTESES = 264,
-    FECHA_PARENTESES = 265
+    FECHA_PARENTESES = 265,
+    AND = 266,
+    IDENT_B = 267
   };
 #endif
 
