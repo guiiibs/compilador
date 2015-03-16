@@ -11,6 +11,7 @@
 #include "compilador.h"
 
 int num_vars;
+char buffer[50];
 
 %}
 
@@ -34,7 +35,7 @@ programa    :{
 
 bloco       : 
               parte_declara_vars
-              { 
+              {
               }
 
               comando_composto 
@@ -42,12 +43,16 @@ bloco       :
 
 
 
-
+//Regra 8
 parte_declara_vars:  var 
 ;
 
 
-var         : { } VAR declara_vars
+var         : VAR {num_vars = 0;} declara_vars 
+			  {
+			   sprintf(buffer, "DMEM %d", num_vars);
+			   geraCodigo(NULL, buffer);
+			  }
             |
 ;
 
@@ -55,10 +60,14 @@ declara_vars: declara_vars declara_var
             | declara_var 
 ;
 
+//Regra 9
 declara_var : { } 
               lista_id_var DOIS_PONTOS 
               tipo 
-              { /* AMEM */
+              {
+			   sprintf(buffer, "AMEM %d", num_vars);
+			   geraCodigo(NULL, buffer);
+			   num_vars = 1;
               }
               PONTO_E_VIRGULA
 ;
@@ -66,13 +75,20 @@ declara_var : { }
 tipo        : IDENT
 ;
 
+//Regra 10
 lista_id_var: lista_id_var VIRGULA IDENT 
               { /* insere última vars na tabela de símbolos */ }
             | IDENT { /* insere vars na tabela de símbolos */}
 ;
 
-lista_idents: lista_idents VIRGULA IDENT  
+lista_idents: lista_idents VIRGULA IDENT
+			  {
+			   num_vars++;
+			  }
             | IDENT
+			  {
+			   num_vars++;
+			  }
 ;
 
 

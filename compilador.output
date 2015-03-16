@@ -32,7 +32,7 @@ Gramática
 
     6 $@3: %empty
 
-    7 var: $@3 VAR declara_vars
+    7 var: VAR $@3 declara_vars
     8    | %empty
 
     9 declara_vars: declara_vars declara_var
@@ -214,13 +214,13 @@ State 11
 
     2 programa: $@1 PROGRAM IDENT ABRE_PARENTESES lista_idents FECHA_PARENTESES PONTO_E_VIRGULA . bloco PONTO
 
-    T_BEGIN   reduzir usando a regra 8 (var)
-    $padrão  reduzir usando a regra 6 ($@3)
+    VAR  deslocar, e ir ao estado 13
 
-    bloco               ir ao estado 13
-    parte_declara_vars  ir ao estado 14
-    var                 ir ao estado 15
-    $@3                 ir ao estado 16
+    $padrão  reduzir usando a regra 8 (var)
+
+    bloco               ir ao estado 14
+    parte_declara_vars  ir ao estado 15
+    var                 ir ao estado 16
 
 
 State 12
@@ -232,156 +232,158 @@ State 12
 
 State 13
 
-    2 programa: $@1 PROGRAM IDENT ABRE_PARENTESES lista_idents FECHA_PARENTESES PONTO_E_VIRGULA bloco . PONTO
+    7 var: VAR . $@3 declara_vars
 
-    PONTO  deslocar, e ir ao estado 17
+    $padrão  reduzir usando a regra 6 ($@3)
+
+    $@3  ir ao estado 17
 
 
 State 14
+
+    2 programa: $@1 PROGRAM IDENT ABRE_PARENTESES lista_idents FECHA_PARENTESES PONTO_E_VIRGULA bloco . PONTO
+
+    PONTO  deslocar, e ir ao estado 18
+
+
+State 15
 
     4 bloco: parte_declara_vars . $@2 comando_composto
 
     $padrão  reduzir usando a regra 3 ($@2)
 
-    $@2  ir ao estado 18
+    $@2  ir ao estado 19
 
 
-State 15
+State 16
 
     5 parte_declara_vars: var .
 
     $padrão  reduzir usando a regra 5 (parte_declara_vars)
 
 
-State 16
-
-    7 var: $@3 . VAR declara_vars
-
-    VAR  deslocar, e ir ao estado 19
-
-
 State 17
+
+    7 var: VAR $@3 . declara_vars
+
+    $padrão  reduzir usando a regra 11 ($@4)
+
+    declara_vars  ir ao estado 20
+    declara_var   ir ao estado 21
+    $@4           ir ao estado 22
+
+
+State 18
 
     2 programa: $@1 PROGRAM IDENT ABRE_PARENTESES lista_idents FECHA_PARENTESES PONTO_E_VIRGULA bloco PONTO .
 
     $padrão  reduzir usando a regra 2 (programa)
 
 
-State 18
+State 19
 
     4 bloco: parte_declara_vars $@2 . comando_composto
 
-    T_BEGIN  deslocar, e ir ao estado 20
+    T_BEGIN  deslocar, e ir ao estado 23
 
-    comando_composto  ir ao estado 21
-
-
-State 19
-
-    7 var: $@3 VAR . declara_vars
-
-    $padrão  reduzir usando a regra 11 ($@4)
-
-    declara_vars  ir ao estado 22
-    declara_var   ir ao estado 23
-    $@4           ir ao estado 24
+    comando_composto  ir ao estado 24
 
 
 State 20
 
-   19 comando_composto: T_BEGIN . comandos T_END
-
-    $padrão  reduzir usando a regra 20 (comandos)
-
-    comandos  ir ao estado 25
-
-
-State 21
-
-    4 bloco: parte_declara_vars $@2 comando_composto .
-
-    $padrão  reduzir usando a regra 4 (bloco)
-
-
-State 22
-
-    7 var: $@3 VAR declara_vars .
+    7 var: VAR $@3 declara_vars .
     9 declara_vars: declara_vars . declara_var
 
     IDENT     reduzir usando a regra 11 ($@4)
     $padrão  reduzir usando a regra 7 (var)
 
-    declara_var  ir ao estado 26
-    $@4          ir ao estado 24
+    declara_var  ir ao estado 25
+    $@4          ir ao estado 22
 
 
-State 23
+State 21
 
    10 declara_vars: declara_var .
 
     $padrão  reduzir usando a regra 10 (declara_vars)
 
 
-State 24
+State 22
 
    13 declara_var: $@4 . lista_id_var DOIS_PONTOS tipo $@5 PONTO_E_VIRGULA
 
-    IDENT  deslocar, e ir ao estado 27
+    IDENT  deslocar, e ir ao estado 26
 
-    lista_id_var  ir ao estado 28
+    lista_id_var  ir ao estado 27
+
+
+State 23
+
+   19 comando_composto: T_BEGIN . comandos T_END
+
+    $padrão  reduzir usando a regra 20 (comandos)
+
+    comandos  ir ao estado 28
+
+
+State 24
+
+    4 bloco: parte_declara_vars $@2 comando_composto .
+
+    $padrão  reduzir usando a regra 4 (bloco)
 
 
 State 25
-
-   19 comando_composto: T_BEGIN comandos . T_END
-
-    T_END  deslocar, e ir ao estado 29
-
-
-State 26
 
     9 declara_vars: declara_vars declara_var .
 
     $padrão  reduzir usando a regra 9 (declara_vars)
 
 
-State 27
+State 26
 
    16 lista_id_var: IDENT .
 
     $padrão  reduzir usando a regra 16 (lista_id_var)
 
 
-State 28
+State 27
 
    13 declara_var: $@4 lista_id_var . DOIS_PONTOS tipo $@5 PONTO_E_VIRGULA
    15 lista_id_var: lista_id_var . VIRGULA IDENT
 
-    VIRGULA      deslocar, e ir ao estado 30
-    DOIS_PONTOS  deslocar, e ir ao estado 31
+    VIRGULA      deslocar, e ir ao estado 29
+    DOIS_PONTOS  deslocar, e ir ao estado 30
+
+
+State 28
+
+   19 comando_composto: T_BEGIN comandos . T_END
+
+    T_END  deslocar, e ir ao estado 31
 
 
 State 29
-
-   19 comando_composto: T_BEGIN comandos T_END .
-
-    $padrão  reduzir usando a regra 19 (comando_composto)
-
-
-State 30
 
    15 lista_id_var: lista_id_var VIRGULA . IDENT
 
     IDENT  deslocar, e ir ao estado 32
 
 
-State 31
+State 30
 
    13 declara_var: $@4 lista_id_var DOIS_PONTOS . tipo $@5 PONTO_E_VIRGULA
 
     IDENT  deslocar, e ir ao estado 33
 
     tipo  ir ao estado 34
+
+
+State 31
+
+   19 comando_composto: T_BEGIN comandos T_END .
+
+    $padrão  reduzir usando a regra 19 (comando_composto)
 
 
 State 32
