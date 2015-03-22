@@ -109,7 +109,7 @@ comando_sem_rotulo:	atribuicao
 					| comando_repetitivo
 ;
 
-atribuicao:		variavel ATRIBUICAO expressão
+atribuicao:		variavel ATRIBUICAO expressao
 ;
 
 expressao:
