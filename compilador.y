@@ -87,10 +87,46 @@ lista_idents: lista_idents VIRGULA IDENT
 ;
 
 
-comando_composto: T_BEGIN comandos T_END 
+comando_composto: T_BEGIN comandos T_END
+; 
 
-comandos:    
+comandos:		comandos PONTO_E_VIRGULA comando
+				| comando
 ;
+
+comando:		numeros DOIS_PONTOS comando_sem_rotulo
+;
+
+numeros:		numero
+				|
+;
+
+comando_sem_rotulo:	atribuicao
+					| chamada_procedimento
+					| desvio
+					| comando_composto
+					| comando_condicional
+					| comando_repetitivo
+;
+
+atribuicao:		variavel ATRIBUICAO expressão
+;
+
+expressao:
+;
+
+chamada_procedimento:
+;
+
+desvio:
+;
+
+comando_condicional:
+;
+
+comando_repetitivo:
+;
+
 
 
 %%
