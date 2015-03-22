@@ -11,7 +11,9 @@
 #include "compilador.h"
 
 int numVars;
-char dados[256];
+char buffer[256];
+
+
 %}
 
 %token PROGRAM ABRE_PARENTESES FECHA_PARENTESES 
@@ -26,7 +28,7 @@ char dados[256];
 
 
 %%
-
+//------------PROGRAM---------------------------------------------
 programa    :{ 
              geraCodigo (NULL, "INPP");
              }
@@ -34,25 +36,29 @@ programa    :{
              ABRE_PARENTESES lista_idents FECHA_PARENTESES PONTO_E_VIRGULA
              bloco PONTO 
              {
-			    sprintf ( dados, "DMEM %d", numVars);
-			    geraCodigo(NULL, dados);
+			    sprintf ( buffer, "DMEM %d", numVars);
+			    geraCodigo(NULL, buffer);
                 geraCodigo (NULL, "PARA");
              }
 ;
+//----------------------------------------------------------------
 
+//-------------BLOCO----------------------------------------------
 bloco       : 
               parte_declara_vars
               { 
               }
 
               comando_composto 
-              ;
+;
+//----------------------------------------------------------------
 
+//-------------DECLARAÇÃO DE VARIÁVEIS----------------------------
 parte_declara_vars: parte_declara_vars PONTO_E_VIRGULA declara_vars
  			| 		VAR {numVars = 0;} declara_vars 
                     { 
-                      sprintf ( dados, "AMEM %d", numVars);
-                      geraCodigo(NULL, dados);
+                      sprintf ( buffer, "AMEM %d", numVars);
+                      geraCodigo(NULL, buffer);
                     }
 ;
 
@@ -85,7 +91,9 @@ lista_id_var: lista_id_var VIRGULA IDENT
 lista_idents: lista_idents VIRGULA IDENT  
             | IDENT
 ;
+//---------------------------------------------------------------
 
+//--------------COMANDO COMPOSTO---------------------------------
 
 comando_composto: T_BEGIN comandos T_END
 ; 
@@ -95,6 +103,7 @@ comandos:		comandos PONTO_E_VIRGULA comando
 ;
 
 comando:		numeros DOIS_PONTOS comando_sem_rotulo
+				| comando_sem_rotulo
 ;
 
 numeros:		numero
@@ -109,12 +118,22 @@ comando_sem_rotulo:	atribuicao
 					| comando_repetitivo
 ;
 
+//----------------ATRIBUIÇÃO--------------------------------------
 atribuicao:		variavel ATRIBUICAO expressao
 ;
 
-expressao:
+variavel:
+;
+//----------------------------------------------------------------
+
+//----------------EXPRESSÃO---------------------------------------
+expressao:		expressao_simples relacao expressao_simples
+				| expressao_simples
 ;
 
+relacao:		
+;
+//----------------------------------------------------------------
 chamada_procedimento:
 ;
 
@@ -125,6 +144,9 @@ comando_condicional:
 ;
 
 comando_repetitivo:
+;
+
+numero:
 ;
 
 
