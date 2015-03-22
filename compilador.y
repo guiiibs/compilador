@@ -10,85 +10,74 @@
 #include <string.h>
 #include "compilador.h"
 
-int num_vars;
-char buffer[50];
-
+int numVars;
+char dados[256];
 %}
 
 %token PROGRAM ABRE_PARENTESES FECHA_PARENTESES 
 %token VIRGULA PONTO_E_VIRGULA DOIS_PONTOS PONTO
 %token T_BEGIN T_END VAR IDENT ATRIBUICAO
-%token LABEL TYPE ARRAY GOTO IF THEN ELSE WHILE DO
-%token OR AND DIV NOT
+
+%token MAIS MENOS ASTERISCO BARRA ABRE_COLCHETES FECHA_COLCHETES LABEL
+%token TYPE ARRAY OF GOTO IF THEN ELSE WHILE DO OR
+%token DIV AND NOT
+
+
+
 
 %%
 
 programa    :{ 
-             geraCodigo (NULL, "INPP"); 
+             geraCodigo (NULL, "INPP");
              }
              PROGRAM IDENT 
              ABRE_PARENTESES lista_idents FECHA_PARENTESES PONTO_E_VIRGULA
              bloco PONTO {
-             geraCodigo (NULL, "PARA"); 
+			 sprintf ( dados, "DMEM %d", numVars); geraCodigo(NULL, dados);
+             geraCodigo (NULL, "PARA");
              }
 ;
 
 bloco       : 
               parte_declara_vars
-              {
+              { 
               }
 
               comando_composto 
               ;
 
-
-
-//Regra 8
-parte_declara_vars:  var 
-;
-
-
-var         : VAR {num_vars = 0;} declara_vars 
-			  {
-			   sprintf(buffer, "DMEM %d", num_vars);
-			   geraCodigo(NULL, buffer);
-			  }
-            |
+parte_declara_vars: parte_declara_vars PONTO_E_VIRGULA declara_vars
+ 			| 		VAR {numVars = 0;} declara_vars { sprintf ( dados, "AMEM %d", numVars); geraCodigo(NULL, dados);  }
 ;
 
 declara_vars: declara_vars declara_var 
             | declara_var 
 ;
 
-//Regra 9
-declara_var : { } 
+declara_var : { }
               lista_id_var DOIS_PONTOS 
               tipo 
-              {
-			   sprintf(buffer, "AMEM %d", num_vars);
-			   geraCodigo(NULL, buffer);
-			   num_vars = 1;
-              }
+              { /* AMEM */
+
+	          }
               PONTO_E_VIRGULA
 ;
 
 tipo        : IDENT
 ;
 
-//Regra 10
 lista_id_var: lista_id_var VIRGULA IDENT 
-              { /* insere última vars na tabela de símbolos */ }
-            | IDENT { /* insere vars na tabela de símbolos */}
+              { /* insere última vars na tabela de símbolos */
+				numVars++;
+			 }
+            | IDENT 
+			  { /* insere vars na tabela de símbolos */
+				numVars++;		
+			 }
 ;
 
-lista_idents: lista_idents VIRGULA IDENT
-			  {
-			   num_vars++;
-			  }
+lista_idents: lista_idents VIRGULA IDENT  
             | IDENT
-			  {
-			   num_vars++;
-			  }
 ;
 
 
