@@ -32,11 +32,9 @@ programa    :{
              }
              PROGRAM IDENT 
              ABRE_PARENTESES lista_idents FECHA_PARENTESES PONTO_E_VIRGULA
-             bloco PONTO 
-             {
-			    sprintf ( dados, "DMEM %d", numVars);
-			    geraCodigo(NULL, dados);
-                geraCodigo (NULL, "PARA");
+             bloco PONTO {
+			 sprintf ( dados, "DMEM %d", numVars); geraCodigo(NULL, dados);
+             geraCodigo (NULL, "PARA");
              }
 ;
 
@@ -49,11 +47,7 @@ bloco       :
               ;
 
 parte_declara_vars: parte_declara_vars PONTO_E_VIRGULA declara_vars
- 			| 		VAR {numVars = 0;} declara_vars 
-                    { 
-                      sprintf ( dados, "AMEM %d", numVars);
-                      geraCodigo(NULL, dados);
-                    }
+ 			| 		VAR {numVars = 0;} declara_vars { sprintf ( dados, "AMEM %d", numVars); geraCodigo(NULL, dados);  }
 ;
 
 declara_vars: declara_vars declara_var 
