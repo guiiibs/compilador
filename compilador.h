@@ -20,7 +20,9 @@ typedef enum simbolos {
   simb_atribuicao, simb_abre_parenteses, simb_fecha_parenteses,
 	simb_label, simb_type, simb_array, simb_goto,
 	simb_if, simb_then, simb_else, simb_while, simb_do,
-	simb_or, simb_and, simb_div, simb_not
+	simb_mais, simb_menos, simb_mult, simb_barra, simb_or, simb_and, simb_div, simb_not, 
+	simb_igual, simb_diferente, simb_menorigual, simb_maiorigual, simb_maior, simb_menor,
+	simb_integer, simb_boolean
 } simbolos;
 
 
@@ -38,6 +40,13 @@ extern int nl;
 
 simbolos simbolo, relacao;
 char token[TAM_TOKEN];
+
+
+
+
+
+
+/**/
 
 
 

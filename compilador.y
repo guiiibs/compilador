@@ -20,9 +20,11 @@ char buffer[256];
 %token VIRGULA PONTO_E_VIRGULA DOIS_PONTOS PONTO
 %token T_BEGIN T_END VAR IDENT ATRIBUICAO
 
-%token MAIS MENOS ASTERISCO BARRA ABRE_COLCHETES FECHA_COLCHETES LABEL
+%token MAIS MENOS MULT ABRE_COLCHETES FECHA_COLCHETES LABEL
 %token TYPE ARRAY OF GOTO IF THEN ELSE WHILE DO OR
 %token DIV AND NOT
+%token IGUAL DIFERENTE MENOR_IGUAL MAIOR_IGUAL MENOR MAIOR
+%token INTEGER BOOLEAN
 
 
 
@@ -75,7 +77,8 @@ declara_var : { }
               PONTO_E_VIRGULA
 ;
 
-tipo        : IDENT
+tipo        : 	  INTEGER
+				| BOOLEAN	
 ;
 
 lista_id_var: lista_id_var VIRGULA IDENT 
@@ -130,10 +133,27 @@ variavel:
 expressao:		expressao_simples relacao expressao_simples
 				| expressao_simples
 ;
+expressao_simples:	expressao_simples MAIS termo
+					| expressao_simples OR termo
+					| termo
 
-relacao:		
+;
+
+termo:			termo MULT fator
+				| termo AND fator
+				| fator
+;
+
+fator:			IDENT | ABRE_PARENTESES expressao_simples FECHA_PARENTESES
+;
+
+relacao:		IGUAL | DIFERENTE | MENOR_IGUAL | MAIOR_IGUAL | MENOR | MAIOR
 ;
 //----------------------------------------------------------------
+
+comando_repetitivo:		WHILE expressao DO comando_sem_rotulo
+;
+
 chamada_procedimento:
 ;
 
@@ -141,9 +161,6 @@ desvio:
 ;
 
 comando_condicional:
-;
-
-comando_repetitivo:
 ;
 
 numero:

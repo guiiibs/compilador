@@ -159,6 +159,25 @@ do { simbolo = simb_do;
           return DO;
  }
 
+\* { simbolo = simb_mult; 
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" mult  ");
+          return MULT;
+ }
+
+\+ { simbolo = simb_mais; 
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" mais  ");
+          return MAIS;
+ }
+
+\- { simbolo = simb_menos; 
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" menos  ");
+          return MENOS;
+ }
+
+
 or { simbolo = simb_or; 
           strncpy (token, yytext, TAM_TOKEN);
           IMPRIME(" or  ");
@@ -181,6 +200,54 @@ not { simbolo = simb_not;
           strncpy (token, yytext, TAM_TOKEN);
           IMPRIME(" not  ");
           return NOT;
+ }
+
+\= { simbolo = simb_igual; 
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" igual  ");
+          return IGUAL;
+ }
+
+\<> { simbolo = simb_diferente; 
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" diferente  ");
+          return DIFERENTE;
+ }
+
+\< { simbolo = simb_menor; 
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" menor  ");
+          return MENOR;
+ }
+
+\<= { simbolo = simb_menorigual; 
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" menor igual  ");
+          return MENOR_IGUAL;
+ }
+
+\> { simbolo = simb_maior; 
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" maior  ");
+          return MAIOR;
+ }
+
+\>= { simbolo = simb_maiorigual; 
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" maior igual  ");
+          return MAIOR_IGUAL;
+ }
+
+integer { simbolo = simb_integer; 
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" integer  ");
+          return INTEGER;
+ }
+
+boolean { simbolo = simb_boolean; 
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" boolean  ");
+          return BOOLEAN;
  }
 
 %%
