@@ -4,7 +4,7 @@
 
 
 typedef enum Categoria{
-	VAR_SIMP, PROC, ROT
+	VAR_SIMP, PROC, ROT, FUNC
 }Categoria;
 
 
@@ -13,20 +13,22 @@ typedef enum Tipo{
 }Tipo;
 
 
-typedef struct Elemento{
+typedef struct Simbolo{
 	Categoria categoria;
 	Tipo tipo;
 	char id[TAM_TOKEN];
 	int nivel_lexico;
+	int deslocamento;
 
-}Elemento;
+}Simbolo;
 
 
 typedef struct{
-	Elemento *ts_elemento;
+	Simbolo *ts_elemento;
 	int top, bottom;
 
 } Tab_simb;
+
 
 
 
