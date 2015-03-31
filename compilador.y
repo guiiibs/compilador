@@ -23,7 +23,7 @@ char buffer[256];
 %token MAIS MENOS MULT ABRE_COLCHETES FECHA_COLCHETES LABEL
 %token TYPE ARRAY OF GOTO IF THEN ELSE WHILE DO OR
 %token DIV AND NOT
-%token IGUAL DIFERENTE MENOR_IGUAL MAIOR_IGUAL MENOR MAIOR
+%token IGUAL DIF MENOR_IGUAL MAIOR_IGUAL MENOR MAIOR
 %token INTEGER BOOLEAN
 
 
@@ -130,16 +130,23 @@ variavel:
 //----------------------------------------------------------------
 
 //----------------EXPRESSÃO---------------------------------------
-expressao:		expressao_simples relacao expressao_simples
+expressao:		expressao_simples MAIOR expressao_simples
+				| expressao_simples MENOR expressao_simples
+				| expressao_simples MAIOR_IGUAL expressao_simples
+				| expressao_simples MENOR_IGUAL expressao_simples
+				| expressao_simples IGUAL expressao_simples
+				| expressao_simples DIF expressao_simples
 				| expressao_simples
 ;
 expressao_simples:	expressao_simples MAIS termo
+					| expressao_simples MENOS termo
 					| expressao_simples OR termo
 					| termo
 
 ;
 
 termo:			termo MULT fator
+				| termo DIV fator
 				| termo AND fator
 				| fator
 ;

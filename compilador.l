@@ -211,7 +211,7 @@ not { simbolo = simb_not;
 \<> { simbolo = simb_diferente; 
           strncpy (token, yytext, TAM_TOKEN);
           IMPRIME(" diferente  ");
-          return DIFERENTE;
+          return DIF;
  }
 
 \< { simbolo = simb_menor; 

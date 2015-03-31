@@ -1,15 +1,11 @@
 
-
-
-
-
 typedef enum Categoria{
 	VAR_SIMP, PROC, ROT, FUNC
 }Categoria;
 
 
 typedef enum Tipo{
-	T_BOOLEAN, T_INTEGER
+	BOOLEAN, INTEGER, UNSET
 }Tipo;
 
 
@@ -19,13 +15,14 @@ typedef struct Simbolo{
 	char id[TAM_TOKEN];
 	int nivel_lexico;
 	int deslocamento;
+	struct SimboloT *ant, *prox, *pai;
 
 }Simbolo;
 
 
-typedef struct{
-	Simbolo *ts_elemento;
-	int top, bottom;
+typedef struct Tab_simb{
+	Simbolo *bottom, *top;
+	int qtd_simbolos;
 
 } Tab_simb;
 
