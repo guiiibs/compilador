@@ -1,16 +1,29 @@
-$DEPURA=1
+CC=gcc
+CC_DEBUG=gcc -g -DDEBUG
+PROG=compilador
+LEX_C=lex.yy.c
+BISON_C=y.tab.c
 
-compilador: lex.yy.c y.tab.c compilador.o compilador.h
-	gcc lex.yy.c compilador.tab.c compilador.o -o compilador -ll -ly -lc
+PROG_REQ=$(LEX_C) $(BISON_C) $(PROG).o $(PROG).h
+PROG_CC_PARAMS=$(LEX_C) $(PROG).tab.c $(PROG).o tab_simb.c -o $(PROG) -ll -ly -lc
 
-lex.yy.c: compilador.l compilador.h
-	flex compilador.l
+default	:	$(PROG)
 
-y.tab.c: compilador.y compilador.h
-	bison compilador.y -d -v
+debug	:	$(PROG_REQ)
+	CC='$(CC_DEBUG)'
+	$(CC_DEBUG) $(PROG_CC_PARAMS)
 
-compilador.o : compilador.h compiladorF.c
-	gcc -c compiladorF.c -o compilador.o
+$(PROG)	: $(PROG_REQ)
+	$(CC) $(PROG_CC_PARAMS)
 
-clean : 
-	rm -f compilador.tab.* lex.yy.c 
+$(LEX_C)	: $(PROG).l $(PROG).h
+	flex $(PROG).l
+
+$(BISON_C)	: $(PROG).y $(PROG).h
+	bison $(PROG).y -d -v
+
+$(PROG).o : $(PROG).h $(PROG)F.c
+	$(CC) -c $(PROG)F.c -o $@
+
+clean :
+	rm -rf $(PROG).tab.* $(LEX_C) *.o $(PROG) $(PROG).output $(PROG).dSYM core

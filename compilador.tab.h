@@ -77,13 +77,14 @@ extern int yydebug;
     AND = 287,
     NOT = 288,
     IGUAL = 289,
-    DIFERENTE = 290,
+    DIF = 290,
     MENOR_IGUAL = 291,
     MAIOR_IGUAL = 292,
     MENOR = 293,
     MAIOR = 294,
     INTEGER = 295,
-    BOOLEAN = 296
+    BOOLEAN = 296,
+    NUMERO = 297
   };
 #endif
 

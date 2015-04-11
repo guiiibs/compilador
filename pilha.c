@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "compilador.h"
-#include "trataerro.h"
 #include "pilha.h"
 
 int inicializaPilha(PilhaT *pilha) {

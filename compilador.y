@@ -9,9 +9,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include "compilador.h"
+#include "tab_simb.h"
 
-int numVars;
-char buffer[256];
+
+char buffer[256]; //Usada no gera_código
+
+int numVars, nivel_lexico, deslocamento, aux;
+Tab_simb *tab_s;
+Simbolo *simb;
+
 
 
 %}
@@ -25,6 +31,7 @@ char buffer[256];
 %token DIV AND NOT
 %token IGUAL DIF MENOR_IGUAL MAIOR_IGUAL MENOR MAIOR
 %token INTEGER BOOLEAN
+%token NUMERO
 
 
 
@@ -33,14 +40,16 @@ char buffer[256];
 //------------PROGRAM---------------------------------------------
 programa    :{ 
              geraCodigo (NULL, "INPP");
+			 nivel_lexico = deslocamento = 0;
              }
-             PROGRAM IDENT 
+             PROGRAM IDENT { simb = insereSimbolo(tab_s, token, PROG, 0);}
              ABRE_PARENTESES lista_idents FECHA_PARENTESES PONTO_E_VIRGULA
              bloco PONTO 
              {
 			    sprintf ( buffer, "DMEM %d", numVars);
 			    geraCodigo(NULL, buffer);
                 geraCodigo (NULL, "PARA");
+				//aux = imprimeTabSimbolos(tab_s);
              }
 ;
 //----------------------------------------------------------------
@@ -71,7 +80,7 @@ declara_vars: declara_vars declara_var
 declara_var : { }
               lista_id_var DOIS_PONTOS 
               tipo 
-              { /* AMEM */
+              {
 
 	          }
               PONTO_E_VIRGULA
@@ -84,10 +93,14 @@ tipo        : 	  INTEGER
 lista_id_var: lista_id_var VIRGULA IDENT 
               { /* insere última vars na tabela de símbolos */
 				numVars++;
+				simb = insereSimbolo(tab_s, token, VAR_S, nivel_lexico);
+				simb->deslocamento = deslocamento++;
 			 }
             | IDENT 
 			  { /* insere vars na tabela de símbolos */
-				numVars++;		
+				numVars++;
+				simb = insereSimbolo(tab_s, token, VAR_S, nivel_lexico);
+				simb->deslocamento = deslocamento++;		
 			 }
 ;
 
@@ -105,13 +118,11 @@ comandos:		comandos PONTO_E_VIRGULA comando
 				| comando
 ;
 
-comando:		numeros DOIS_PONTOS comando_sem_rotulo
+comando:		NUMERO DOIS_PONTOS comando_sem_rotulo
 				| comando_sem_rotulo
 ;
 
-numeros:		numero
-				|
-;
+
 
 comando_sem_rotulo:	atribuicao
 					| chamada_procedimento
@@ -154,8 +165,6 @@ termo:			termo MULT fator
 fator:			IDENT | ABRE_PARENTESES expressao_simples FECHA_PARENTESES
 ;
 
-relacao:		IGUAL | DIFERENTE | MENOR_IGUAL | MAIOR_IGUAL | MENOR | MAIOR
-;
 //----------------------------------------------------------------
 
 comando_repetitivo:		WHILE expressao DO comando_sem_rotulo
@@ -168,9 +177,6 @@ desvio:
 ;
 
 comando_condicional:
-;
-
-numero:
 ;
 
 

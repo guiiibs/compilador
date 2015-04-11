@@ -22,6 +22,11 @@
  *  variáveis globais
  * ------------------------------------------------------------------- */
 
+
+
+
+
+
 FILE* fp=NULL;
 void geraCodigo (char* rot, char* comando) {
 
@@ -40,3 +45,17 @@ int imprimeErro ( char* erro ) {
   fprintf (stderr, "Erro na linha %d - %s\n", nl, erro);
   exit(-1);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
