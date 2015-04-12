@@ -379,18 +379,18 @@ struct yy_trans_info
 	};
 static yyconst flex_int16_t yy_accept[105] =
     {   0,
-        0,    0,   42,   41,    2,    1,   13,   14,   25,   26,
-       11,   27,   12,   40,   10,    9,   34,   32,   36,   15,
-       15,   15,   15,   15,   15,   15,   15,   15,   15,   15,
-       15,   15,   15,    2,    0,   40,    8,   35,   33,   37,
-       15,   15,   15,   15,   15,   15,   15,   15,   15,   15,
-       15,   15,   15,   15,   15,   15,   15,   15,   15,   15,
-        0,    0,   15,   15,   15,   15,   15,   15,    7,   15,
-       15,   15,   15,   15,   15,   15,    5,   15,    3,   15,
-       15,   15,   15,   15,   15,   15,   15,   15,   15,   15,
-       15,    6,   15,   15,   15,   15,   15,   15,   15,   15,
+        0,    0,   42,   41,    2,    1,   13,   14,   26,   27,
+       11,   28,   12,   39,   10,    9,   35,   33,   37,   40,
+       40,   40,   40,   40,   40,   40,   40,   40,   40,   40,
+       40,   40,   40,    2,    0,   39,    8,   36,   34,   38,
+       40,   40,   40,   40,   40,   40,   25,   40,   40,   40,
+       21,   40,   40,   40,   29,   40,   40,   40,   40,   40,
+        0,    0,   30,   40,   40,   40,   31,   40,    7,   40,
+       40,   40,   32,   40,   40,   40,    5,   40,    3,   40,
+       40,   40,   23,   20,   40,   40,   40,   22,   18,   40,
+       19,    6,   40,   40,   17,   40,   24,   40,   40,   40,
 
-       15,   15,    4,    0
+       16,   15,    4,    0
     } ;
 
 static yyconst flex_int32_t yy_ec[256] =
@@ -927,236 +927,236 @@ YY_RULE_SETUP
 case 15:
 YY_RULE_SETUP
 #line 102 "compilador.l"
-{ simbolo = simb_identificador; 
-          strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME(" ident  ");
-          return IDENT;
-        }
-	YY_BREAK
-case 16:
-YY_RULE_SETUP
-#line 108 "compilador.l"
-{ simbolo = simb_label; 
-          strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME(" label  ");
-          return LABEL;
- }
-	YY_BREAK
-case 17:
-YY_RULE_SETUP
-#line 114 "compilador.l"
-{ simbolo = simb_type; 
-          strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME(" type  ");
-          return TYPE;
-        }
-	YY_BREAK
-case 18:
-YY_RULE_SETUP
-#line 120 "compilador.l"
-{ simbolo = simb_array; 
-          strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME(" array  ");
-          return ARRAY;
- }
-	YY_BREAK
-case 19:
-YY_RULE_SETUP
-#line 126 "compilador.l"
-{ simbolo = simb_goto; 
-          strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME(" goto  ");
-          return GOTO;
- }
-	YY_BREAK
-case 20:
-YY_RULE_SETUP
-#line 132 "compilador.l"
-{ simbolo = simb_if; 
-          strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME(" if  ");
-          return IF;
- }
-	YY_BREAK
-case 21:
-YY_RULE_SETUP
-#line 138 "compilador.l"
-{ simbolo = simb_then; 
-          strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME(" then  ");
-          return THEN;
- }
-	YY_BREAK
-case 22:
-YY_RULE_SETUP
-#line 144 "compilador.l"
-{ simbolo = simb_else; 
-          strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME(" else  ");
-          return ELSE;
- }
-	YY_BREAK
-case 23:
-YY_RULE_SETUP
-#line 150 "compilador.l"
-{ simbolo = simb_while; 
-          strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME(" while  ");
-          return WHILE;
- }
-	YY_BREAK
-case 24:
-YY_RULE_SETUP
-#line 156 "compilador.l"
-{ simbolo = simb_do; 
-          strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME(" do  ");
-          return DO;
- }
-	YY_BREAK
-case 25:
-YY_RULE_SETUP
-#line 162 "compilador.l"
-{ simbolo = simb_mult; 
-          strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME(" mult  ");
-          return MULT;
- }
-	YY_BREAK
-case 26:
-YY_RULE_SETUP
-#line 168 "compilador.l"
-{ simbolo = simb_mais; 
-          strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME(" mais  ");
-          return MAIS;
- }
-	YY_BREAK
-case 27:
-YY_RULE_SETUP
-#line 174 "compilador.l"
-{ simbolo = simb_menos; 
-          strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME(" menos  ");
-          return MENOS;
- }
-	YY_BREAK
-case 28:
-YY_RULE_SETUP
-#line 181 "compilador.l"
-{ simbolo = simb_or; 
-          strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME(" or  ");
-          return OR;
- }
-	YY_BREAK
-case 29:
-YY_RULE_SETUP
-#line 187 "compilador.l"
-{ simbolo = simb_and; 
-          strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME(" and  ");
-          return AND;
- }
-	YY_BREAK
-case 30:
-YY_RULE_SETUP
-#line 193 "compilador.l"
-{ simbolo = simb_div; 
-          strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME(" div  ");
-          return DIV;
- }
-	YY_BREAK
-case 31:
-YY_RULE_SETUP
-#line 199 "compilador.l"
-{ simbolo = simb_not; 
-          strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME(" not  ");
-          return NOT;
- }
-	YY_BREAK
-case 32:
-YY_RULE_SETUP
-#line 205 "compilador.l"
-{ simbolo = simb_igual; 
-          strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME(" igual  ");
-          return IGUAL;
- }
-	YY_BREAK
-case 33:
-YY_RULE_SETUP
-#line 211 "compilador.l"
-{ simbolo = simb_diferente; 
-          strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME(" diferente  ");
-          return DIF;
- }
-	YY_BREAK
-case 34:
-YY_RULE_SETUP
-#line 217 "compilador.l"
-{ simbolo = simb_menor; 
-          strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME(" menor  ");
-          return MENOR;
- }
-	YY_BREAK
-case 35:
-YY_RULE_SETUP
-#line 223 "compilador.l"
-{ simbolo = simb_menorigual; 
-          strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME(" menor igual  ");
-          return MENOR_IGUAL;
- }
-	YY_BREAK
-case 36:
-YY_RULE_SETUP
-#line 229 "compilador.l"
-{ simbolo = simb_maior; 
-          strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME(" maior  ");
-          return MAIOR;
- }
-	YY_BREAK
-case 37:
-YY_RULE_SETUP
-#line 235 "compilador.l"
-{ simbolo = simb_maiorigual; 
-          strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME(" maior igual  ");
-          return MAIOR_IGUAL;
- }
-	YY_BREAK
-case 38:
-YY_RULE_SETUP
-#line 241 "compilador.l"
 { simbolo = simb_integer; 
           strncpy (token, yytext, TAM_TOKEN);
           IMPRIME(" integer  ");
           return INTEGER;
  }
 	YY_BREAK
-case 39:
+case 16:
 YY_RULE_SETUP
-#line 247 "compilador.l"
+#line 108 "compilador.l"
 { simbolo = simb_boolean; 
           strncpy (token, yytext, TAM_TOKEN);
           IMPRIME(" boolean  ");
           return BOOLEAN;
  }
 	YY_BREAK
-case 40:
+case 17:
 YY_RULE_SETUP
-#line 253 "compilador.l"
+#line 114 "compilador.l"
+{ simbolo = simb_label; 
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" label  ");
+          return LABEL;
+ }
+	YY_BREAK
+case 18:
+YY_RULE_SETUP
+#line 120 "compilador.l"
+{ simbolo = simb_type; 
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" type  ");
+          return TYPE;
+        }
+	YY_BREAK
+case 19:
+YY_RULE_SETUP
+#line 126 "compilador.l"
+{ simbolo = simb_array; 
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" array  ");
+          return ARRAY;
+ }
+	YY_BREAK
+case 20:
+YY_RULE_SETUP
+#line 132 "compilador.l"
+{ simbolo = simb_goto; 
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" goto  ");
+          return GOTO;
+ }
+	YY_BREAK
+case 21:
+YY_RULE_SETUP
+#line 138 "compilador.l"
+{ simbolo = simb_if; 
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" if  ");
+          return IF;
+ }
+	YY_BREAK
+case 22:
+YY_RULE_SETUP
+#line 144 "compilador.l"
+{ simbolo = simb_then; 
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" then  ");
+          return THEN;
+ }
+	YY_BREAK
+case 23:
+YY_RULE_SETUP
+#line 150 "compilador.l"
+{ simbolo = simb_else; 
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" else  ");
+          return ELSE;
+ }
+	YY_BREAK
+case 24:
+YY_RULE_SETUP
+#line 156 "compilador.l"
+{ simbolo = simb_while; 
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" while  ");
+          return WHILE;
+ }
+	YY_BREAK
+case 25:
+YY_RULE_SETUP
+#line 162 "compilador.l"
+{ simbolo = simb_do; 
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" do  ");
+          return DO;
+ }
+	YY_BREAK
+case 26:
+YY_RULE_SETUP
+#line 168 "compilador.l"
+{ simbolo = simb_mult; 
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" mult  ");
+          return MULT;
+ }
+	YY_BREAK
+case 27:
+YY_RULE_SETUP
+#line 174 "compilador.l"
+{ simbolo = simb_mais; 
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" mais  ");
+          return MAIS;
+ }
+	YY_BREAK
+case 28:
+YY_RULE_SETUP
+#line 180 "compilador.l"
+{ simbolo = simb_menos; 
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" menos  ");
+          return MENOS;
+ }
+	YY_BREAK
+case 29:
+YY_RULE_SETUP
+#line 187 "compilador.l"
+{ simbolo = simb_or; 
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" or  ");
+          return OR;
+ }
+	YY_BREAK
+case 30:
+YY_RULE_SETUP
+#line 193 "compilador.l"
+{ simbolo = simb_and; 
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" and  ");
+          return AND;
+ }
+	YY_BREAK
+case 31:
+YY_RULE_SETUP
+#line 199 "compilador.l"
+{ simbolo = simb_div; 
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" div  ");
+          return DIV;
+ }
+	YY_BREAK
+case 32:
+YY_RULE_SETUP
+#line 205 "compilador.l"
+{ simbolo = simb_not; 
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" not  ");
+          return NOT;
+ }
+	YY_BREAK
+case 33:
+YY_RULE_SETUP
+#line 211 "compilador.l"
+{ simbolo = simb_igual; 
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" igual  ");
+          return IGUAL;
+ }
+	YY_BREAK
+case 34:
+YY_RULE_SETUP
+#line 217 "compilador.l"
+{ simbolo = simb_diferente; 
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" diferente  ");
+          return DIF;
+ }
+	YY_BREAK
+case 35:
+YY_RULE_SETUP
+#line 223 "compilador.l"
+{ simbolo = simb_menor; 
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" menor  ");
+          return MENOR;
+ }
+	YY_BREAK
+case 36:
+YY_RULE_SETUP
+#line 229 "compilador.l"
+{ simbolo = simb_menorigual; 
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" menor igual  ");
+          return MENOR_IGUAL;
+ }
+	YY_BREAK
+case 37:
+YY_RULE_SETUP
+#line 235 "compilador.l"
+{ simbolo = simb_maior; 
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" maior  ");
+          return MAIOR;
+ }
+	YY_BREAK
+case 38:
+YY_RULE_SETUP
+#line 241 "compilador.l"
+{ simbolo = simb_maiorigual; 
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" maior igual  ");
+          return MAIOR_IGUAL;
+ }
+	YY_BREAK
+case 39:
+YY_RULE_SETUP
+#line 247 "compilador.l"
 { simbolo = simb_numero;
   strncpy (token, yytext, TAM_TOKEN);
   IMPRIME(" numero");
   return NUMERO;
 }
+	YY_BREAK
+case 40:
+YY_RULE_SETUP
+#line 253 "compilador.l"
+{ simbolo = simb_identificador; 
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" ident  ");
+          return IDENT;
+        }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP

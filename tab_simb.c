@@ -5,11 +5,27 @@
 #include "tab_simb.h"
 
 
+Tab_simb *iniciaTabelaSimbolo(Tab_simb *tab){
+	int aux;
+	if(tab != NULL){
+		trataErro(ERRO_ALOCACAO, "");
+	}
+	else{
+		tab = (Tab_simb *) malloc(sizeof(Tab_simb));
+		tab->qtd_simbolos = 0;
+		tab->bottom = tab->top = NULL;
+	}
+	//aux = imprimeTabSimbolos(tab);
+	return tab;
+}
+
+
 
 Simbolo *procuraSimbolo(Tab_simb *tab, char *id, int nivel_l){
+	int aux;
 	Simbolo *simb;
 	if (tab == NULL){
-		trataErro(ERRO_TAB_NAO_ALOC, "");
+		trataErro(ERRO_TAB_NAO_ALOC, "ProcuraSimbolo");
 	}
 	else{
 		simb = tab->top;
@@ -19,15 +35,18 @@ Simbolo *procuraSimbolo(Tab_simb *tab, char *id, int nivel_l){
 			}
 			simb = simb->ant;
 		}
+		//aux = imprimeTabSimbolos(tab);
 		return simb;
 	}
+	//aux = imprimeTabSimbolos(tab);
 	return NULL;
 }
 
 Simbolo *insereSimbolo(Tab_simb *tab, char *id, Categoria cat, int nivel_l){
+	int aux;
 	Simbolo *simb;	
 	if (tab == NULL){
-		trataErro(ERRO_TAB_NAO_ALOC, "");		//Criar tratamento de erro
+		trataErro(ERRO_TAB_NAO_ALOC, "InsereSimbolo");		//Criar tratamento de erro
 	}
 	else{
 		simb = procuraSimbolo(tab, id, nivel_l);
@@ -58,6 +77,7 @@ Simbolo *insereSimbolo(Tab_simb *tab, char *id, Categoria cat, int nivel_l){
       		tab->top = simb;
 		}
 	}
+	//aux = imprimeTabSimbolos(tab);
 	return simb;
 }
 
@@ -94,15 +114,15 @@ int imprimeTabSimbolos(Tab_simb *tab) {
     trataErro(ERRO_TAB_NAO_ALOC, "");
   }
   else {
-    printf(" tab->qtd_simbolos = %d\n", tab->qtd_simbolos); // #DEBUG
+    fprintf(stderr," tab->qtd_simbolos = %d\n", tab->qtd_simbolos); // #DEBUG
     simbolo = tab->bottom;
     while (simbolo != NULL) {
-      printf("simbolo->id= %-5s  tipo(cod)= %d categoria= %d nivel_lexico,deslocamento=(%d,%d)\n", simbolo->id, simbolo->tipo, simbolo->categoria, simbolo->nivel_lexico, simbolo->deslocamento);
+      fprintf(stderr,"simbolo->id= %-5s  tipo(cod)= %d categoria= %d nivel_lexico,deslocamento=(%d,%d)\n", simbolo->id, simbolo->tipo, simbolo->categoria, simbolo->nivel_lexico, simbolo->deslocamento);
       total_simbolos++;
       simbolo = simbolo->prox;
     }
   }
-  printf(" Total de simbolos = %d\n", total_simbolos); // #DEBUG
+  fprintf(stderr," Total de simbolos = %d\n", total_simbolos); // #DEBUG
   return 0;
 }
 
@@ -125,7 +145,7 @@ int trataErro(ErroT cod_erro, char *str) {
     exit(cod_erro);
 
   case ERRO_TAB_NAO_ALOC:
-    fprintf(stderr, "ERRO: *** Tabela de simbolos dinamica nao foi alocada!\n");
+    fprintf(stderr, "ERRO: *** Tabela de simbolos dinamica nao foi alocada na funcao '%s'!\n", str);	
     exit(cod_erro);
   case ERRO_SIMB_NAO_ENC:
     fprintf(stderr, "ERRO: *** Impossivel remover!\n => O simbolo %s nao foi encontrado.\n", str);

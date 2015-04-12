@@ -14,10 +14,10 @@
 
 char buffer[256]; //Usada no gera_código
 
-int numVars, nivel_lexico, deslocamento, aux;
-Tab_simb *tab_s;
-Simbolo *simb;
+int numVars, nivel_lexico, deslocamento, totalVars;
 
+Simbolo *simb;
+Tab_simb *tab_s;
 
 
 %}
@@ -39,14 +39,15 @@ Simbolo *simb;
 %%
 //------------PROGRAM---------------------------------------------
 programa    :{ 
-             geraCodigo (NULL, "INPP");
-			 nivel_lexico = deslocamento = 0;
+             	geraCodigo (NULL, "INPP");
+			 	nivel_lexico = deslocamento = 0;
+			 	tab_s = iniciaTabelaSimbolo(tab_s);
              }
              PROGRAM IDENT { simb = insereSimbolo(tab_s, token, PROG, 0);}
              ABRE_PARENTESES lista_idents FECHA_PARENTESES PONTO_E_VIRGULA
              bloco PONTO 
              {
-			    sprintf ( buffer, "DMEM %d", numVars);
+			    sprintf ( buffer, "DMEM %d", totalVars);
 			    geraCodigo(NULL, buffer);
                 geraCodigo (NULL, "PARA");
 				//aux = imprimeTabSimbolos(tab_s);
@@ -65,43 +66,39 @@ bloco       :
 //----------------------------------------------------------------
 
 //-------------DECLARAÇÃO DE VARIÁVEIS----------------------------
-parte_declara_vars: parte_declara_vars PONTO_E_VIRGULA declara_vars
- 			| 		VAR {numVars = 0;} declara_vars 
-                    { 
-                      sprintf ( buffer, "AMEM %d", numVars);
-                      geraCodigo(NULL, buffer);
-                    }
+parte_declara_vars: var
 ;
 
-declara_vars: declara_vars declara_var 
-            | declara_var 
+var         : VAR { deslocamento= 0; totalVars = 0; }declara_vars
+            |
 ;
 
-declara_var : { }
-              lista_id_var DOIS_PONTOS 
-              tipo 
-              {
+declara_vars: declara_vars { numVars=0; } declara_var
+            | { numVars=0; }declara_var
+;
 
-	          }
+declara_var : lista_id_var DOIS_PONTOS tipo
+			 {
+			 	sprintf ( buffer, "AMEM %d", numVars);
+				totalVars += numVars;
+				geraCodigo(NULL, buffer);
+				
+			 }
               PONTO_E_VIRGULA
 ;
 
-tipo        : 	  INTEGER
-				| BOOLEAN	
+tipo        : INTEGER
+            | BOOLEAN
 ;
 
-lista_id_var: lista_id_var VIRGULA IDENT 
-              { /* insere última vars na tabela de símbolos */
-				numVars++;
-				simb = insereSimbolo(tab_s, token, VAR_S, nivel_lexico);
-				simb->deslocamento = deslocamento++;
-			 }
-            | IDENT 
-			  { /* insere vars na tabela de símbolos */
-				numVars++;
-				simb = insereSimbolo(tab_s, token, VAR_S, nivel_lexico);
-				simb->deslocamento = deslocamento++;		
-			 }
+lista_id_var: lista_id_var VIRGULA IDENT  
+			{ numVars++; 
+			  simb = insereSimbolo(tab_s, token, VAR_S, nivel_lexico);
+			  simb->deslocamento = deslocamento++; } /* insere ultima var na tabela de simbolos */
+            | IDENT
+            { numVars++;
+			  simb = insereSimbolo(tab_s, token, VAR_S, nivel_lexico);
+			  simb->deslocamento = deslocamento++; } /* insere vars na tabela de simbolos */
 ;
 
 lista_idents: lista_idents VIRGULA IDENT  
@@ -114,12 +111,12 @@ lista_idents: lista_idents VIRGULA IDENT
 comando_composto: T_BEGIN comandos T_END
 ; 
 
-comandos:		comandos PONTO_E_VIRGULA comando
-				| comando
+comandos: comandos PONTO_E_VIRGULA comando
+		| comando
 ;
 
-comando:		NUMERO DOIS_PONTOS comando_sem_rotulo
-				| comando_sem_rotulo
+comando:  NUMERO DOIS_PONTOS comando_sem_rotulo
+	  	| comando_sem_rotulo
 ;
 
 

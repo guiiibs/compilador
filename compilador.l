@@ -99,11 +99,17 @@ end { simbolo = simb_end;
           return FECHA_PARENTESES;
  }
 
-{ident} { simbolo = simb_identificador; 
+integer { simbolo = simb_integer; 
           strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME(" ident  ");
-          return IDENT;
-        }
+          IMPRIME(" integer  ");
+          return INTEGER;
+ }
+
+boolean { simbolo = simb_boolean; 
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" boolean  ");
+          return BOOLEAN;
+ }
 
 label { simbolo = simb_label; 
           strncpy (token, yytext, TAM_TOKEN);
@@ -238,23 +244,17 @@ not { simbolo = simb_not;
           return MAIOR_IGUAL;
  }
 
-integer { simbolo = simb_integer; 
-          strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME(" integer  ");
-          return INTEGER;
- }
-
-boolean { simbolo = simb_boolean; 
-          strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME(" boolean  ");
-          return BOOLEAN;
- }
-
 {numero} { simbolo = simb_numero;
   strncpy (token, yytext, TAM_TOKEN);
   IMPRIME(" numero");
   return NUMERO;
 }
+
+{ident} { simbolo = simb_identificador; 
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" ident  ");
+          return IDENT;
+        }
 
 %%
 

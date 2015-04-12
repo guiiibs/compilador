@@ -62,6 +62,8 @@ typedef enum ErroT {
 
 int trataErro(ErroT, char*);
 
+Tab_simb *iniciaTabelaSimbolo(Tab_simb *);
+
 Simbolo *procuraSimbolo(Tab_simb *, char *, int);
 
 Simbolo *insereSimbolo(Tab_simb *, char *, Categoria, int);
