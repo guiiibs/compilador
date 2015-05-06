@@ -16,6 +16,8 @@ typedef enum Tipo{
 }Tipo;
 
 
+
+
 typedef struct Simbolo{
 	Categoria categoria;
 	Tipo tipo;
@@ -68,7 +70,7 @@ Simbolo *procuraSimbolo(Tab_simb *, char *, int);
 
 Simbolo *insereSimbolo(Tab_simb *, char *, Categoria, int);
 
-int removeSimbolo(Tab_simb *, Simbolo *);
+int removeSimboloTop(Tab_simb *);
 
 int imprimeTabSimbolos(Tab_simb *);
 

@@ -208,6 +208,18 @@ not { simbolo = simb_not;
           return NOT;
  }
 
+true { simbolo = simb_true; 
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" true  ");
+          return TRUE;
+ }
+
+false { simbolo = simb_false; 
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" false  ");
+          return FALSE;
+ }
+
 \= { simbolo = simb_igual; 
           strncpy (token, yytext, TAM_TOKEN);
           IMPRIME(" igual  ");

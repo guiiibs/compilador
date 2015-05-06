@@ -30,7 +30,7 @@ Tab_simb *tab_s;
 %token TYPE ARRAY OF GOTO IF THEN ELSE WHILE DO OR
 %token DIV AND NOT
 %token IGUAL DIF MENOR_IGUAL MAIOR_IGUAL MENOR MAIOR
-%token INTEGER BOOLEAN
+%token INTEGER BOOLEAN TRUE FALSE
 %token NUMERO
 
 
@@ -159,7 +159,10 @@ termo:			termo MULT fator
 				| fator
 ;
 
-fator:			IDENT | ABRE_PARENTESES expressao_simples FECHA_PARENTESES
+fator:			IDENT
+				| ABRE_PARENTESES expressao_simples FECHA_PARENTESES
+				| TRUE
+				| FALSE
 ;
 
 //----------------------------------------------------------------

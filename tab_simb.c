@@ -62,7 +62,7 @@ Simbolo *insereSimbolo(Tab_simb *tab, char *id, Categoria cat, int nivel_l){
 			simb->nivel_lexico = nivel_l;      		
 			simb->categoria = cat;
      		
-		    tab->qtd_simbolos++;
+		  tab->qtd_simbolos++;
 
 			if (tab->qtd_simbolos == 1) {
         		tab->bottom = simb;
@@ -81,23 +81,13 @@ Simbolo *insereSimbolo(Tab_simb *tab, char *id, Categoria cat, int nivel_l){
 	return simb;
 }
 
-int removeSimbolo(Tab_simb *tab, Simbolo *simb){
-	if (tab == NULL)
+int removeSimboloTop(Tab_simb *tab){
+	Simbolo *simb;
+  if (tab == NULL)
 		trataErro(ERRO_TAB_NAO_ALOC, "");
 	else{
-		if(simb == NULL)
-			trataErro(ERRO_ALOCACAO, "");
-		else{
-			if (simb == tab->bottom) {
-        tab->bottom = simb->prox;
-      }
-      else
-        simb->ant->prox = simb->prox;		//simb  == simb-> prox
-      if (simb == tab->top) {
-        tab->top = simb->ant;
-      }
-      else
-        simb->prox->ant = simb->ant;
+      simb = tab->top;
+      tab->top = tab->top->ant;
       tab->qtd_simbolos--;
       free(simb);
     }
