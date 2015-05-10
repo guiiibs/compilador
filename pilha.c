@@ -13,6 +13,8 @@ int inicializaPilha(PilhaT *pilha) {
   }
 }
 
+git clone --depth=1 https://github.com/Bash-it/bash-it.git ~/.bash_it
+
 int empilha(PilhaT *pilha, void *novo_elemento) {
   if (pilha == NULL) {
     trataErro(ERRO_PILHA_N_EXISTE, "");
@@ -26,7 +28,7 @@ int empilha(PilhaT *pilha, void *novo_elemento) {
   }
   return 0;
 }
-
+	
 void * desempilha(PilhaT *pilha) {
   if (pilha == NULL) {
     trataErro(ERRO_PILHA_N_EXISTE, "");

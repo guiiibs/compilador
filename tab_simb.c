@@ -5,6 +5,11 @@
 #include "tab_simb.h"
 
 
+
+
+/* -------------------------------------------------------------------
+ *  TABELA DE SIMBOLOS
+ * ------------------------------------------------------------------- */
 Tab_simb *iniciaTabelaSimbolo(Tab_simb *tab){
 	int aux;
 	if(tab != NULL){
@@ -90,7 +95,6 @@ int removeSimboloTop(Tab_simb *tab){
       tab->top = tab->top->ant;
       tab->qtd_simbolos--;
       free(simb);
-    }
   }
   return 0;
 }
@@ -116,9 +120,34 @@ int imprimeTabSimbolos(Tab_simb *tab) {
   return 0;
 }
 
+/* -------------------------------------------------------------------
+ *  TIPOS
+ * ------------------------------------------------------------------- */
 
-//TRATAMENTO DE ERROS
-int trataErro(ErroT cod_erro, char *str) {
+int verificaTipo(Tipo type){
+  Tipo a, b;
+  a = desempilhaTipo();
+  b = desempilhaTipo();
+
+  if (a == b && type == a)
+    return 1;
+  if (strcmp(a,b->tipo) == 0 && strcmp(tipo, a->tipo) == 0)
+    retorno = 1;
+  else
+    retorno = 0;
+
+  empilhaTipo(a->tipo);
+  free(a);
+  free(b);
+  return retorno;
+}
+
+
+/* -------------------------------------------------------------------
+ *  TRATAMENTO DE ERROS
+ * ------------------------------------------------------------------- */
+
+ int trataErro(ErroT cod_erro, char *str) {
   switch (cod_erro) {
   case SEM_ERRO:
     break;
