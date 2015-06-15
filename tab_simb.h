@@ -1,13 +1,12 @@
-
-
 /* VAR_S = variavel simples
 	 PROC = procedimento
 	 ROT = rotulo
 	 FUNC = funcao
 	 PROG = nome do programa
+	 PF = parametro formal
 */
 typedef enum Categoria{
-	VAR_S, PROC, ROT, FUNC, PROG
+	VAR_S, PROC, ROT, FUNC, PROG, PF
 }Categoria;
 
 
@@ -16,15 +15,35 @@ typedef enum Tipo{
 }Tipo;
 
 
+typedef enum Passagem {
+  REF =1, VALOR=2
+}Passagem;
 
+typedef struct Parametro {
+  Tipo tipo;
+  Passagem passagem;
+}Parametro;
 
 typedef struct Simbolo{
 	Categoria categoria;
 	Tipo tipo;
 	char id[TAM_TOKEN];
 	int nivel_lexico;
-	int deslocamento;
 	struct Simbolo *ant, *prox, *pai;
+	 
+	union {
+    	Passagem passagem;
+    	struct {
+      	int qtd_parametros;
+      	char *rotulo;
+      	Parametro *lista_param;
+      	};
+    };
+
+    union {
+    	int deslocamento;
+    	int end_retorno;
+  	};
 
 }Simbolo;
 
@@ -35,35 +54,6 @@ typedef struct Tab_simb{
 
 } Tab_simb;
 
-//TRATAMENTO DE ERRO
-
-typedef enum ErroT {
-
-  /* Retorno 0 -> Nao ha erro (UNIX default) */
-  SEM_ERRO=0,
-
-  /* Erros Sintaticos */
-  ERRO_SINTATICO=40, ERRO_SINT_IDENT_NAO_ENC=41, ERRO_TIPO=42,
-
-  /* Alocacao mal sucedida */
-  ERRO_ALOCACAO, ERRO_TAB_NAO_ALOC,
-
-  /* Identificadores */
-  ERRO_IDENT_JA_DEC, ERRO_SIMB_NAO_ENC,
-
-  /* Lista de Parametros */
-  ERRO_LISTA_PARAM_NAO_ALOC, ERRO_PARAM_NAO_ENC, ERRO_MAX_PARAM,
-  
-  /* PILHA */
-  ERRO_PILHA_N_EXISTE, ERRO_PILHA_VAZIA, ERRO_PILHA_TAM_EXCED,
-
-  /* WARNING */  
-  WARN_IDENT_JA_DEC,
-
-} ErroT;
-
-int trataErro(ErroT, char*);
-
 Tab_simb *iniciaTabelaSimbolo(Tab_simb *);
 
 Simbolo *procuraSimbolo(Tab_simb *, char *, int);
@@ -73,4 +63,6 @@ Simbolo *insereSimbolo(Tab_simb *, char *, Categoria, int);
 int removeSimboloTop(Tab_simb *);
 
 int imprimeTabSimbolos(Tab_simb *);
+
+int insereTipo(Tab_simb *tab, Tipo);
 

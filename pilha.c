@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "compilador.h"
+#include "trataerro.h"
 #include "pilha.h"
 
 int inicializaPilha(PilhaT *pilha) {
@@ -12,8 +13,6 @@ int inicializaPilha(PilhaT *pilha) {
     return 0;
   }
 }
-
-git clone --depth=1 https://github.com/Bash-it/bash-it.git ~/.bash_it
 
 int empilha(PilhaT *pilha, void *novo_elemento) {
   if (pilha == NULL) {
@@ -28,7 +27,7 @@ int empilha(PilhaT *pilha, void *novo_elemento) {
   }
   return 0;
 }
-	
+
 void * desempilha(PilhaT *pilha) {
   if (pilha == NULL) {
     trataErro(ERRO_PILHA_N_EXISTE, "");

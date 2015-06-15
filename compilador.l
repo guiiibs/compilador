@@ -40,31 +40,43 @@ program { simbolo  = simb_program;
 
 var      { simbolo = simb_var;  
           strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME("var  ");
+          IMPRIME("var ");
           return VAR;
  }
 
+ procedure { simbolo  = simb_procedure;
+  strncpy (token, yytext, TAM_TOKEN);
+  IMPRIME("procedure");
+  return PROCEDURE;
+}
+
+function { simbolo  = simb_function;
+  strncpy (token, yytext, TAM_TOKEN);
+  IMPRIME("function");
+  return FUNCTION;
+}
+
 begin { simbolo = simb_begin;
           strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME("begin ");
+          IMPRIME("begin");
           return T_BEGIN;
  }
 
 end { simbolo = simb_end;
           strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME("end  ");
+          IMPRIME("end");
           return T_END;
  }
 
 := { simbolo = simb_atribuicao;  
           strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME(" atribuicao  ");
+          IMPRIME("atribuicao");
           return ATRIBUICAO;  
  }
 
 \; { simbolo = simb_ponto_e_virgula;  
           strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME(" pt_virgula  ");
+          IMPRIME("pt_virgula");
           return PONTO_E_VIRGULA;
  }
 
@@ -133,6 +145,18 @@ goto { simbolo = simb_goto;
           strncpy (token, yytext, TAM_TOKEN);
           IMPRIME(" goto  ");
           return GOTO;
+ }
+
+write { simbolo = simb_write; 
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" write  ");
+          return WRITE;
+ }
+
+read { simbolo = simb_read; 
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" read  ");
+          return READ;
  }
 
 if { simbolo = simb_if; 

@@ -16,12 +16,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include "compilador.h"
+#include "tab_simb.h"
+#include "pilha.h"
+#include "trataerro.h"
 
 
 /* -------------------------------------------------------------------
  *  variáveis globais
  * ------------------------------------------------------------------- */
-
+#define ROTULO_TAM 7  /* Tamanho maximo do 'char' para o rotulo no MEPA  */
 
 
 
@@ -39,6 +42,43 @@ void geraCodigo (char* rot, char* comando) {
   } else {
     fprintf(fp, "%s: %s \n", rot, comando); fflush(fp);
   }
+}
+
+
+void empilhaAMEM(int n_vars, PilhaT *pilha_amem_dmem){
+  int *temp_num;
+  temp_num = malloc (sizeof (int));
+    *temp_num = n_vars;
+      empilha(pilha_amem_dmem, temp_num);
+}
+
+int geraRotulo(char **novo_rotulo, int *contador, PilhaT *pilha_rot) {
+  char *rot;
+
+  *novo_rotulo = malloc (sizeof (char [ROTULO_TAM]));
+  if (*novo_rotulo == NULL) {
+    trataErro(ERRO_ALOCACAO, "");
+  }
+  sprintf(*novo_rotulo, "R%02d", *contador);
+  *contador = *contador + 1;
+  
+  empilha(pilha_rot, *novo_rotulo);
+
+  return 0;
+}
+
+
+
+void geraCodigoARMZ(Simbolo *simb){
+  char buffer[256];
+  if (simb->passagem == VALOR) { 
+    sprintf(buffer, "ARMZ %d,%d", simb->nivel_lexico, simb->deslocamento );
+    geraCodigo (NULL, buffer); 
+  } 
+    else { 
+      sprintf(buffer,"ARMI %d,%d", simb->nivel_lexico, simb->deslocamento);
+      geraCodigo (NULL, buffer);
+    }
 }
 
 int imprimeErro ( char* erro ) {

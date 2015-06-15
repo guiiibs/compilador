@@ -3,8 +3,8 @@
 #include <string.h>
 #include "compilador.h"
 #include "tab_simb.h"
-
-
+#include "pilha.h"
+#include "trataerro.h"
 
 
 /* -------------------------------------------------------------------
@@ -82,7 +82,7 @@ Simbolo *insereSimbolo(Tab_simb *tab, char *id, Categoria cat, int nivel_l){
       		tab->top = simb;
 		}
 	}
-	//aux = imprimeTabSimbolos(tab);
+	aux = imprimeTabSimbolos(tab);
 	return simb;
 }
 
@@ -102,108 +102,45 @@ int removeSimboloTop(Tab_simb *tab){
 
 
 int imprimeTabSimbolos(Tab_simb *tab) {
-  Simbolo *simbolo;
-  int total_simbolos = 0;
+  Simbolo *simb;
   if (tab == NULL ) {
     trataErro(ERRO_TAB_NAO_ALOC, "");
   }
   else {
     fprintf(stderr," tab->qtd_simbolos = %d\n", tab->qtd_simbolos); // #DEBUG
-    simbolo = tab->bottom;
-    while (simbolo != NULL) {
-      fprintf(stderr,"simbolo->id= %-5s  tipo(cod)= %d categoria= %d nivel_lexico,deslocamento=(%d,%d)\n", simbolo->id, simbolo->tipo, simbolo->categoria, simbolo->nivel_lexico, simbolo->deslocamento);
-      total_simbolos++;
-      simbolo = simbolo->prox;
+    simb = tab->bottom;
+    while (simb != NULL) {
+      fprintf(stderr,"simbolo->id= %-5s  tipo= %d categoria= %d nivel_lexico,deslocamento=(%d,%d)\n", simb->id, simb->tipo, simb->categoria, simb->nivel_lexico, simb->deslocamento);
+      simb = simb->prox;
     }
   }
-  fprintf(stderr," Total de simbolos = %d\n", total_simbolos); // #DEBUG
   return 0;
 }
 
-/* -------------------------------------------------------------------
- *  TIPOS
- * ------------------------------------------------------------------- */
-
-int verificaTipo(Tipo type){
-  Tipo a, b;
-  a = desempilhaTipo();
-  b = desempilhaTipo();
-
-  if (a == b && type == a)
-    return 1;
-  if (strcmp(a,b->tipo) == 0 && strcmp(tipo, a->tipo) == 0)
-    retorno = 1;
-  else
-    retorno = 0;
-
-  empilhaTipo(a->tipo);
-  free(a);
-  free(b);
-  return retorno;
-}
 
 
-/* -------------------------------------------------------------------
- *  TRATAMENTO DE ERROS
- * ------------------------------------------------------------------- */
-
- int trataErro(ErroT cod_erro, char *str) {
-  switch (cod_erro) {
-  case SEM_ERRO:
-    break;
-
-    /* Erros Sintaticos */
-  case ERRO_SINT_IDENT_NAO_ENC:
-    fprintf(stderr, "ERRO: *** Erro sintatico!\n => O identificador '%s' nao foi encontrado.\n", str);
-    exit(cod_erro);
-  case ERRO_IDENT_JA_DEC:
-    fprintf(stderr, "ERRO: *** Erro sintatico!\n => O identificador '%s' jah foi declarado anteriormente.\n", str);
-    exit(cod_erro);
-  case ERRO_TIPO:
-    fprintf(stderr, "ERRO: *** Erro sintatico!\n => Tipos incompatíveis!\n");
-    exit(cod_erro);
-
-  case ERRO_TAB_NAO_ALOC:
-    fprintf(stderr, "ERRO: *** Tabela de simbolos dinamica nao foi alocada na funcao '%s'!\n", str);	
-    exit(cod_erro);
-  case ERRO_SIMB_NAO_ENC:
-    fprintf(stderr, "ERRO: *** Impossivel remover!\n => O simbolo %s nao foi encontrado.\n", str);
-    exit(cod_erro);
-
-    /* Lista de Parametros */
-  case ERRO_LISTA_PARAM_NAO_ALOC:
-    fprintf(stderr, "ERRO: *** A Lista Parametros nao foi alocada!\n");
-    exit(cod_erro);
-  case ERRO_PARAM_NAO_ENC:
-    fprintf(stderr, "ERRO: *** O Parametro nao foi encontrado, impossivel inserir na Lista de Parametros!\n");
-    exit(cod_erro);
-  case ERRO_MAX_PARAM:
-    //fprintf(stderr, "ERRO: ***\n => O numero de Parametros (%d) passou do limite interno.\n", TAM_LISTA_PARAM);
-    exit(cod_erro);
-
-    /* PILHA */
-  case ERRO_PILHA_N_EXISTE:
-    fprintf(stderr, "ERRO: *** Impossivel desempilhar, a Pilha nao existe!\n");
-    exit(cod_erro);
-  case ERRO_PILHA_VAZIA:
-    fprintf(stderr, "ERRO: *** Impossivel desempilhar, a Pilha está vazia!\n");
-    exit(cod_erro);
-  case ERRO_PILHA_TAM_EXCED:
-    //fprintf(stderr, "ERRO: *** Tamanho da pilha (%d elementos) excedido!\n", PILHA_TAM);
-    exit(cod_erro);
-
-  case ERRO_ALOCACAO:
-    fprintf(stderr, "ERRO: *** Nao foi possivel alocar espaco na memoria!\n");
-    exit(cod_erro);
-
-    /* WARNING */  
-  case WARN_IDENT_JA_DEC:
-    fprintf(stderr, "Warning:\n => O identificador '%s' jah foi declarado anteriormente.\n", str);
-    break;
-
-  default:
-    fprintf(stderr, "ERRO: *** Erro desconhecido!\n");
-    exit(cod_erro);
+int insereTipo(Tab_simb *tab, Tipo tipo) {
+  Simbolo *simb;
+  int i;
+  if (tab == NULL ) {
+    trataErro(ERRO_TAB_NAO_ALOC, "");  }
+  else {
+    i=0;
+    simb = tab->top;
+    while (simb->tipo == T_UNSET) {
+      if (simb->categoria == VAR_S || simb->categoria == FUNC || simb->categoria == PF) {
+        simb->tipo = tipo;
+        i++;
+      }
+      else {
+        break;
+      }
+      simb = simb->ant;
+    }
+    return i;
   }
-  return 0;
+  return -1;
 }
+
+
+

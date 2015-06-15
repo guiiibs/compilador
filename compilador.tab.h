@@ -84,7 +84,13 @@ extern int yydebug;
     MAIOR = 294,
     INTEGER = 295,
     BOOLEAN = 296,
-    NUMERO = 297
+    TRUE = 297,
+    FALSE = 298,
+    NUMERO = 299,
+    READ = 300,
+    WRITE = 301,
+    PROCEDURE = 302,
+    FUNCTION = 303
   };
 #endif
 
