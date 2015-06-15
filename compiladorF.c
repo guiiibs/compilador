@@ -45,7 +45,7 @@ void geraCodigo (char* rot, char* comando) {
 }
 
 
-void empilhaAMEM(int n_vars, PilhaT *pilha_amem_dmem){
+void empilhaVars(int n_vars, PilhaT *pilha_amem_dmem){
   int *temp_num;
   temp_num = malloc (sizeof (int));
     *temp_num = n_vars;
@@ -80,6 +80,29 @@ void geraCodigoARMZ(Simbolo *simb){
       geraCodigo (NULL, buffer);
     }
 }
+// void geraCodigoCRVL(){
+// if (chamada_de_proc) { 
+//   teste++;
+//     if (proc_atual != NULL){
+//       if ((proc_atual->lista_param[indice_param].passagem == REF) && (simbolo->passagem == VALOR)){ 
+//         geraCodigoCRxx("CREN", simbolo); 
+//       }
+//       else { 
+//         geraCodigoCRxx("CRVL", simbolo); 
+//       } 
+//     }
+//     else { 
+//       geraCodigoCRxx("CRVL", simbolo); 
+//     } 
+// }
+// else if (simbolo->passagem == T_VALOR) { 
+//   geraCodigoArgs (NULL, "CRVL %d, %d", simbolo->nivel_lexico, simbolo->deslocamento);
+// }
+//   else { 
+//     geraCodigoCRxx("CRVI", simbolo); 
+//   }
+// }
+
 
 int imprimeErro ( char* erro ) {
   fprintf (stderr, "Erro na linha %d - %s\n", nl, erro);

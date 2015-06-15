@@ -1,9 +1,4 @@
      INPP
      AMEM 2
-     AMEM 2
      DSVS R00
-R00: NADA 
-     CRCT 5
-     ARMI 0, 0
-     DMEM 4
-     PARA
+R01: ENPR 1 

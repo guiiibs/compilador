@@ -90,7 +90,8 @@ extern int yydebug;
     READ = 300,
     WRITE = 301,
     PROCEDURE = 302,
-    FUNCTION = 303
+    FUNCTION = 303,
+    LOWER_THAN_ELSE = 304
   };
 #endif
 

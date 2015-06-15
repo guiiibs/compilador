@@ -69,6 +69,10 @@ Simbolo *insereSimbolo(Tab_simb *tab, char *id, Categoria cat, int nivel_l){
      		
 		  tab->qtd_simbolos++;
 
+      if (cat == FUNC || cat == PROC){
+        simb->lista_param = malloc (sizeof (Parametro) * TAM_LISTA_PARAM);
+      }
+
 			if (tab->qtd_simbolos == 1) {
         		tab->bottom = simb;
        			simb->ant = simb->prox = NULL;
@@ -86,19 +90,57 @@ Simbolo *insereSimbolo(Tab_simb *tab, char *id, Categoria cat, int nivel_l){
 	return simb;
 }
 
-int removeSimboloTop(Tab_simb *tab){
-	Simbolo *simb;
-  if (tab == NULL)
-		trataErro(ERRO_TAB_NAO_ALOC, "");
-	else{
-      simb = tab->top;
-      tab->top = tab->top->ant;
+int removeSimbolo(Tab_simb *tab, Simbolo *simb) {
+  if (tab == NULL ) {
+    trataErro(ERRO_TAB_NAO_ALOC, "");  }
+  else {
+    if ( simb == NULL ) {
+      trataErro(ERRO_SIMB_NAO_ENC, "");
+    }
+    else {
+      if (simb == tab->bottom) {
+        tab->bottom = simb->prox;
+      }
+      else
+        simb->ant->prox = simb->prox;
+      if (simb == tab->top) {
+        // debug_print("[ultimo1]simb->id = %s\n", simb->id);
+        tab->top = simb->ant;
+      }
+      else
+        simb->prox->ant = simb->ant;
+
       tab->qtd_simbolos--;
+      // debug_print("[rm]simb->id = %s\n", simb->id);
       free(simb);
+    }
   }
   return 0;
 }
 
+int removeFPSimbolosTab(Tab_simb *tab, Simbolo *pai) {
+  Simbolo *simb;
+  int nivel_lexico;
+  int num_var_simples;
+
+  if (tab == NULL ) {
+    trataErro(ERRO_TAB_NAO_ALOC, "");  }
+  else {
+    simb = pai;
+    if ( simb == NULL ) {
+      trataErro(ERRO_SIMB_NAO_ENC, "");
+    }
+    else {
+      nivel_lexico = simb->nivel_lexico;
+      num_var_simples = 0;
+      while ( (simb=simb->prox) != NULL) {
+        num_var_simples++;
+        removeSimbolo(tab, simb);
+      }
+    }
+  }
+  return 0;
+}
 
 
 int imprimeTabSimbolos(Tab_simb *tab) {
@@ -142,5 +184,61 @@ int insereTipo(Tab_simb *tab, Tipo tipo) {
   return -1;
 }
 
+int inserePassagemParam(Tab_simb *tab, Passagem passagem, int num_vars) {
+  Simbolo *simb;
+  int i;
+  if (tab == NULL ) {
+    trataErro(ERRO_TAB_NAO_ALOC, "");
+  }
+  else {
+    simb = tab->top;
+    for (i = 0; i < num_vars; i++) {
+      simb->passagem = passagem;
+      simb = simb->ant;
+    }
+    return i;
+  }
+  return -1;
+}
 
+int setaDeslocamentoParam(Tab_simb *tab, int num_parametros) {
+  Simbolo *simb;
+  int i;
+  if (tab == NULL ) {
+    trataErro(ERRO_TAB_NAO_ALOC, "");  }
+  else {
+    simb = tab->top;
+    for (i = num_parametros; i >= 0; i--) {
+      simb->deslocamento = i - (4 + num_parametros);
+      simb = simb->ant;
+    }
+    return i;
+  }
+  return -1;
+}
 
+int insereParamLista(Simbolo  *simb, Tipo tipo, Passagem passagem, int n_params) {
+  int i;
+  if (simb == NULL ) {
+    trataErro(ERRO_PARAM_NAO_ENC, "");
+  }
+  else {
+    if (simb->qtd_parametros >= TAM_LISTA_PARAM ) {
+      trataErro(ERRO_MAX_PARAM, "");
+    }
+    else {
+      if (simb->lista_param == NULL ) {
+        trataErro(ERRO_LISTA_PARAM_NAO_ALOC, "");
+      }
+      else {
+        for (i=0; i < n_params; i++) { // #TODO inverter a ordem?
+          // debug_print("[for] simb->id = %s, passagem = %d, soma = %d\n", simb->id, passagem, (simb->qtd_parametros - n_params + i));
+          simb->lista_param[simb->qtd_parametros - n_params + i].tipo = tipo;
+          simb->lista_param[simb->qtd_parametros - n_params + i].passagem = passagem;
+          // simb->prox->tipo = tipo;
+        }
+      }
+    }
+  }
+  return 0;
+}

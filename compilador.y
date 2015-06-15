@@ -19,16 +19,30 @@
 
 
 
-int numVars, nivel_lexico, deslocamento, totalVars, aux_tipo, cont_rotulo;
+int numVars, nivel_lexico, deslocamento, totalVars, aux_tipo,indice_param, cont_rotulo, teste = 0;
 
 char *rotulo_mepa, *rotulo_mepa_aux;
 char buffer[256]; //Usada no gera_código
 
-Simbolo *simb, *simb_aux;
+Simbolo *simb, *simb_aux, *proc_atual;
 Tab_simb *tab_s;
-PilhaT pilha_tipos, pilha_amem_dmem, pilha_rotulos;
+PilhaT pilha_tipos, pilha_amem_dmem, pilha_rotulos, pilha_simbolos;
+bool chamada_de_proc;
 
+#define geraCodigoCRxx(instrucao, simbolo) \
+  sprintf(buffer, "%s %d, %d", instrucao, simbolo->nivel_lexico, simbolo->deslocamento); \
+  geraCodigo(NULL, buffer );
 
+#define geraCodigoCV(simbolo) \
+  if (chamada_de_proc) { teste++;\
+    if (proc_atual != NULL) { \
+      if ((proc_atual->lista_param[indice_param].passagem == REF) && (simbolo->passagem == VALOR)) { geraCodigoCRxx("CREN", simbolo); } \
+      else { geraCodigoCRxx("CRVL", simbolo); } }\
+    else { geraCodigoCRxx("CRVL", simbolo); } } \
+  else if (simbolo->passagem == VALOR) { \
+  	sprintf(buffer, "CRVL %d, %d", simbolo->nivel_lexico, simbolo->deslocamento); \
+  	geraCodigo(NULL, buffer); } \
+    else { geraCodigoCRxx("CRVI", simbolo); }
 %}
 
 %token PROGRAM ABRE_PARENTESES FECHA_PARENTESES 
@@ -44,6 +58,8 @@ PilhaT pilha_tipos, pilha_amem_dmem, pilha_rotulos;
 %token READ WRITE
 %token PROCEDURE FUNCTION
 
+%nonassoc LOWER_THAN_ELSE
+%nonassoc ELSE
 
 
 %%
@@ -66,7 +82,7 @@ programa    :{
 //----------------------------------------------------------------
 
 //-------------BLOCO----------------------------------------------
-bloco       : rotulos parte_declara_vars  { empilhaAMEM(deslocamento, &pilha_amem_dmem);
+bloco       : rotulos parte_declara_vars  { empilhaVars(deslocamento, &pilha_amem_dmem);
                                             geraRotulo(&rotulo_mepa, &cont_rotulo, &pilha_rotulos);
                                             sprintf(buffer, "DSVS %s", rotulo_mepa);
                                             geraCodigo(NULL, buffer); }
@@ -99,6 +115,7 @@ declara_var : lista_id_var DOIS_PONTOS tipo
 			 {
 			 	sprintf ( buffer, "AMEM %d", numVars);
 				totalVars += numVars;
+				inserePassagemParam(tab_s, VALOR, numVars);
 				geraCodigo(NULL, buffer);
 				
 			 }
@@ -127,10 +144,10 @@ lista_idents: lista_idents VIRGULA IDENT  			//Usado na lista de param do progro
 //-------------PROCEDIMENTOS E FUNÇÕES----------------------------
 procs_funcs : PROCEDURE IDENT 				{ geraRotulo(&rotulo_mepa, &cont_rotulo, &pilha_rotulos);
 											  sprintf(buffer, "ENPR %d", ++nivel_lexico);
-											  geraCodigo(desempilha(&pilha_rotulos), buffer);
-											  simb = insereSimbolo(tab_s, token, PROC, nivel_lexico);
+/*Gera o rotulo, empilha, faz ENPR*/		  geraCodigo(desempilha(&pilha_rotulos), buffer);
+/*Desempilha, atribui o rot pro simb*/		  simb = insereSimbolo(tab_s, token, PROC, nivel_lexico);
 											  simb->rotulo = rotulo_mepa;
-											  /*empilha(&pilha_simbs, simb);*/
+											  empilha(&pilha_simbolos, simb);
 											  simb->qtd_parametros = numVars = 0;
 											}
               params_proc_func PONTO_E_VIRGULA bloco_proc_func
@@ -139,7 +156,7 @@ procs_funcs : PROCEDURE IDENT 				{ geraRotulo(&rotulo_mepa, &cont_rotulo, &pilh
 											  geraCodigo(desempilha(&pilha_rotulos), buffer);
 											  simb = insereSimbolo(tab_s, token, FUNC, nivel_lexico);
 											  simb->rotulo = rotulo_mepa;
-											  /*empilha(&pilha_simbs, simb);*/
+											  empilha(&pilha_simbolos, simb);
 											  simb->qtd_parametros = numVars = 0;
 											}
               params_proc_func
@@ -148,14 +165,25 @@ procs_funcs : PROCEDURE IDENT 				{ geraRotulo(&rotulo_mepa, &cont_rotulo, &pilh
             | 
 ;
 
-bloco_proc_func: rotulos parte_declara_vars 
-              procs_funcs                      
-              comando_composto PONTO_E_VIRGULA
+bloco_proc_func: rotulos parte_declara_vars     { empilhaVars(deslocamento); geraRotulo(&rotulo_mepa, &cont_rotulo, &pilha_rotulos);
+                                                  sprintf(buffer, "DSVS %s", rotulo_mepa);
+                                                  geraCodigo(NULL, buffer); }
+              procs_funcs                       { geraCodigo(desempilha(&pilha_rotulos), "NADA"); }
+              comando_composto PONTO_E_VIRGULA  { numVars = *(int *)desempilha(&pilha_amem_dmem);
+              									  if (numVars){
+              									  	sprintf(buffer,"DMEM %d", numVars );
+              									  	geraCodigo(NULL, buffer);
+              									  }
+              									  simb = desempilha(&pilha_simbolos); removeFPSimbolosTab(tab_s, simb);	
+              									  sprintf(buffer, "RTPR %d, %d", nivel_lexico--, simb->qtd_parametros);
+                                                  geraCodigo(NULL, buffer ); 
+                                                }
               procs_funcs
 ;
 
 params_proc_func: ABRE_PARENTESES
-              lista_dec_param
+              lista_dec_param		{ setaDeslocamentoParam(tab_s, simb->qtd_parametros); 
+              						  simb->end_retorno = -4 - simb->qtd_parametros; }
               FECHA_PARENTESES
             |
 ;
@@ -166,11 +194,15 @@ lista_dec_param : lista_dec_param PONTO_E_VIRGULA
             |
 ;
 
-parametros_dec: VAR lista_id_par DOIS_PONTOS tipo 
-            | lista_id_par DOIS_PONTOS tipo       
+parametros_dec: VAR lista_id_par DOIS_PONTOS tipo { inserePassagemParam(tab_s, REF, numVars); 		//Define passagem de parametro na ts 
+													insereParamLista(simb, aux_tipo, REF, numVars);}	//insere lista de param no simb
+            | lista_id_par DOIS_PONTOS tipo       { inserePassagemParam(tab_s, VALOR, numVars); 
+													insereParamLista(simb, aux_tipo, VALOR, numVars);}
 ;
-lista_id_par: lista_id_par VIRGULA IDENT
-            | ident_ou_func                       
+lista_id_par: lista_id_par VIRGULA IDENT 		  { simb->qtd_parametros++; numVars++; 
+													simb_aux = insereSimbolo(tab_s, token, PF, nivel_lexico); simb_aux->pai = simb;}
+            | ident_ou_func                       { simb->qtd_parametros++; numVars++; 
+													simb_aux = insereSimbolo(tab_s, token, PF, nivel_lexico); simb_aux->pai = simb;}
 ;
 //---------------------------------------------------------------
 
@@ -198,7 +230,6 @@ comando_sem_rotulo:	atrib_proc
            		| comando_repetitivo
             	| READ ABRE_PARENTESES lista_param_leit FECHA_PARENTESES
             	| WRITE ABRE_PARENTESES lista_param_impr FECHA_PARENTESES
-            	| GOTO NUMERO
 ;
 //---------------------------------------------------------------
 
@@ -213,30 +244,43 @@ lista_param_leit: lista_param_leit VIRGULA IDENT  { geraCodigo (NULL, "LEIT"); s
 ;
 
 lista_param_impr: lista_param_impr VIRGULA IDENT { simb = procuraSimbolo(tab_s, token, nivel_lexico);
-												   /*geraCodigoARMZ(simb);*/
-												 } 
+												   geraCodigoCV(simb);
+												   geraCodigo (NULL, "IMPR");
+        										 } 
             | IDENT                              { simb = procuraSimbolo(tab_s, token, nivel_lexico);
-												   /*geraCodigoARMZ(simb);*/
-												 } 
+												   geraCodigoCV(simb);
+												   geraCodigo (NULL, "IMPR");
+        										 } 
 ;
 //---------------------------------------------------------------
 
 //----------------IF------------------------------------------
-comando_condicional:	if_simples
-						|if_simples ELSE
+comando_condicional:	if_simples %prec LOWER_THAN_ELSE  { geraCodigo (desempilha(&pilha_rotulos), "NADA"); }
+            			| if_simples ELSE { rotulo_mepa=desempilha(&pilha_rotulos);
+                                sprintf(buffer, "DSVS %s", rotulo_mepa_aux);
+                                geraCodigo(NULL, buffer);
+                                geraCodigo(rotulo_mepa, "NADA"); }
+              			comando { geraCodigo(desempilha(&pilha_rotulos), "NADA"); }
 ;
 
-if_simples:			IF
-					expressao
-					THEN
-					comando
-;
+if_simples:				IF  { geraRotulo(&rotulo_mepa_aux, &cont_rotulo, &pilha_rotulos);
+                  			  geraRotulo(&rotulo_mepa, &cont_rotulo, &pilha_rotulos); }
+      					expressao { sprintf(buffer, "DSVF %s", rotulo_mepa);
+      								geraCodigo(NULL, buffer); }
+      					THEN comando
 //---------------------------------------------------------------
 
 //----------------WHILE---------------------------------------
-comando_repetitivo:	WHILE
-					expressao
-					DO comando
+comando_repetitivo:		WHILE       { geraRotulo(&rotulo_mepa, &cont_rotulo, &pilha_rotulos);
+                            		  geraCodigo (rotulo_mepa, "NADA"); }
+              			expressao   { geraRotulo(&rotulo_mepa, &cont_rotulo, &pilha_rotulos);
+              						  sprintf(buffer, "DSVF %s", rotulo_mepa);
+                            		  geraCodigo(NULL, buffer); }
+              			DO comando  { rotulo_mepa_aux=desempilha(&pilha_rotulos);
+                            		  rotulo_mepa=desempilha(&pilha_rotulos);
+                            		  sprintf(buffer, "DSVS %s", rotulo_mepa);
+                            		  geraCodigo(NULL, buffer);
+                            		  geraCodigo (rotulo_mepa_aux, "NADA"); }
 
 ;
 //---------------------------------------------------------------
@@ -251,16 +295,18 @@ atrib_proc:		IDENT 		{ simb_aux = procuraSimbolo(tab_s, token, nivel_lexico);
 exec_ou_atrib: 	ATRIBUICAO expressao 			{ comparaTipo(&pilha_tipos, ATRIB, T_INT);
 												  geraCodigoARMZ(simb_aux);
 												}
-				| exec_proc
+				| exec_proc						{ sprintf(buffer, "CHPR %s, %d", simb_aux->rotulo, nivel_lexico);
+												  geraCodigo(NULL, buffer); } 
 
 ;
 
-exec_proc   : ABRE_PARENTESES  lista_de_parametros FECHA_PARENTESES 
+exec_proc   : ABRE_PARENTESES  { chamada_de_proc = true; indice_param=0; }
+				lista_de_parametros FECHA_PARENTESES { chamada_de_proc = false; }
             | ABRE_PARENTESES FECHA_PARENTESES
             |
 ;
 
-lista_de_parametros: lista_de_parametros VIRGULA  expressao 
+lista_de_parametros: lista_de_parametros VIRGULA { chamada_de_proc = true; ++indice_param; } expressao 
             | expressao
 ;
 
@@ -322,7 +368,9 @@ main (int argc, char** argv) {
 /* -------------------------------------------------------------------
  *  Inicia a Tabela de Símbolos
  * ------------------------------------------------------------------- */
- inicializaPilha(&pilha_tipos);
+  inicializaPilha(&pilha_rotulos);
+  inicializaPilha(&pilha_tipos);
+  inicializaPilha(&pilha_simbolos);
 
    yyin=fp;
    yyparse();

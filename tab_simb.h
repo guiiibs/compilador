@@ -1,3 +1,5 @@
+#define TAM_LISTA_PARAM 150
+
 /* VAR_S = variavel simples
 	 PROC = procedimento
 	 ROT = rotulo
@@ -64,5 +66,9 @@ int removeSimboloTop(Tab_simb *);
 
 int imprimeTabSimbolos(Tab_simb *);
 
-int insereTipo(Tab_simb *tab, Tipo);
+int insereTipo(Tab_simb *, Tipo);
+
+int inserePassageParam(Tab_simb *, Passagem, int);
+
+int setaDeslocamentoParam(Tab_simb *, int);
 
