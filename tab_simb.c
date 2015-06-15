@@ -26,25 +26,31 @@ Tab_simb *iniciaTabelaSimbolo(Tab_simb *tab){
 
 
 
-Simbolo *procuraSimbolo(Tab_simb *tab, char *id, int nivel_l){
-	int aux;
-	Simbolo *simb;
-	if (tab == NULL){
-		trataErro(ERRO_TAB_NAO_ALOC, "ProcuraSimbolo");
-	}
-	else{
-		simb = tab->top;
-		while (simb != NULL){
-			if (((strcmp(simb->id, id)) == 0) && (simb->nivel_lexico <= nivel_l)){
-				break;			
-			}
-			simb = simb->ant;
-		}
-		//aux = imprimeTabSimbolos(tab);
-		return simb;
-	}
-	//aux = imprimeTabSimbolos(tab);
-	return NULL;
+Simbolo *procuraSimbolo(Tab_simb *tab, char *id, int nivel_lexico) {
+  Simbolo *simb;
+  simb = retornaSimbolo(tab, id, nivel_lexico);
+
+  if ( simb == NULL ) {
+    trataErro(ERRO_SINT_IDENT_NAO_ENC, id);
+  }
+  return simb;
+}
+
+Simbolo *retornaSimbolo(Tab_simb *tab, char *id, int nivel_lexico) {
+  Simbolo *simb;
+  if (tab == NULL ) {
+    trataErro(ERRO_TAB_NAO_ALOC, "");
+   }
+  else {
+    simb=tab->top;
+    while (simb != NULL) {
+      if ( (strcmp(simb->id, id) == 0)  )// && (simb->nivel_lexico <= nivel_lexico))
+        break;
+      simb = simb->ant;
+    }
+    return simb;
+  }
+  return NULL;
 }
 
 Simbolo *insereSimbolo(Tab_simb *tab, char *id, Categoria cat, int nivel_l){
@@ -54,7 +60,7 @@ Simbolo *insereSimbolo(Tab_simb *tab, char *id, Categoria cat, int nivel_l){
 		trataErro(ERRO_TAB_NAO_ALOC, "InsereSimbolo");		//Criar tratamento de erro
 	}
 	else{
-		simb = procuraSimbolo(tab, id, nivel_l);
+		simb = retornaSimbolo(tab, id, nivel_l);
 		if (simb != NULL){		//Simbolo já declarado
 			trataErro(WARN_IDENT_JA_DEC, id);
 		}
@@ -118,7 +124,7 @@ int removeSimbolo(Tab_simb *tab, Simbolo *simb) {
   return 0;
 }
 
-int removeFPSimbolosTab(Tab_simb *tab, Simbolo *pai) {
+int removeFPSimbolos(Tab_simb *tab, Simbolo *pai) {
   Simbolo *simb;
   int nivel_lexico;
   int num_var_simples;

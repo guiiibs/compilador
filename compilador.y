@@ -19,7 +19,7 @@
 
 
 
-int numVars, nivel_lexico, deslocamento, totalVars, aux_tipo,indice_param, cont_rotulo, teste = 0;
+int numVars, nivel_lexico, deslocamento, totalVars, indice_param, cont_rotulo, teste = 0;
 
 char *rotulo_mepa, *rotulo_mepa_aux;
 char buffer[256]; //Usada no gera_código
@@ -28,6 +28,7 @@ Simbolo *simb, *simb_aux, *proc_atual;
 Tab_simb *tab_s;
 PilhaT pilha_tipos, pilha_amem_dmem, pilha_rotulos, pilha_simbolos;
 bool chamada_de_proc;
+Tipo aux_tipo;
 
 #define geraCodigoCRxx(instrucao, simbolo) \
   sprintf(buffer, "%s %d, %d", instrucao, simbolo->nivel_lexico, simbolo->deslocamento); \
@@ -72,9 +73,11 @@ programa    :{
              PROGRAM IDENT { simb = insereSimbolo(tab_s, token, PROG, 0);}
              ABRE_PARENTESES lista_idents FECHA_PARENTESES PONTO_E_VIRGULA
              bloco PONTO 
-             {
-			    sprintf ( buffer, "DMEM %d", totalVars);
-			    geraCodigo(NULL, buffer);
+             {	numVars = *(int *)desempilha(&pilha_amem_dmem);
+    			if (numVars) {
+					sprintf ( buffer, "DMEM %d", totalVars);
+					geraCodigo(NULL, buffer);
+				}
                 geraCodigo (NULL, "PARA");
 				//aux = imprimeTabSimbolos(tab_s);
              }
@@ -174,7 +177,7 @@ bloco_proc_func: rotulos parte_declara_vars     { empilhaVars(deslocamento); ger
               									  	sprintf(buffer,"DMEM %d", numVars );
               									  	geraCodigo(NULL, buffer);
               									  }
-              									  simb = desempilha(&pilha_simbolos); removeFPSimbolosTab(tab_s, simb);	
+              									  simb = desempilha(&pilha_simbolos); removeFPSimbolos(tab_s, simb);	
               									  sprintf(buffer, "RTPR %d, %d", nivel_lexico--, simb->qtd_parametros);
                                                   geraCodigo(NULL, buffer ); 
                                                 }
@@ -287,7 +290,7 @@ comando_repetitivo:		WHILE       { geraRotulo(&rotulo_mepa, &cont_rotulo, &pilha
 
 //----------------ATRIBUIÇÃO---------------------------------------
 atrib_proc:		IDENT 		{ simb_aux = procuraSimbolo(tab_s, token, nivel_lexico); 
-							  empilhaTipo(&pilha_tipos, simb_aux->tipo); /*proc_atual=simb_aux;*/ 
+							  empilhaTipo(&pilha_tipos, simb_aux->tipo); proc_atual=simb_aux; 
 							}
 				exec_ou_atrib
 ;
@@ -343,7 +346,9 @@ fator:			ident_ou_func
 ;
 
 
-ident_ou_func  : IDENT   					{ simb = procuraSimbolo(tab_s, token, nivel_lexico); }
+ident_ou_func  : IDENT   					{ simb = procuraSimbolo(tab_s, token, nivel_lexico); 
+											  geraCodigoCV(simb); empilhaTipo(&pilha_tipos, simb->tipo);
+}		
 //----------------------------------------------------------------
 
 

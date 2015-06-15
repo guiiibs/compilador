@@ -58,7 +58,9 @@ typedef struct Tab_simb{
 
 Tab_simb *iniciaTabelaSimbolo(Tab_simb *);
 
-Simbolo *procuraSimbolo(Tab_simb *, char *, int);
+Simbolo *procuraSimbolo(Tab_simb *, char *, int );
+
+Simbolo *retornaSimbolo(Tab_simb *, char *, int );
 
 Simbolo *insereSimbolo(Tab_simb *, char *, Categoria, int);
 
@@ -68,7 +70,11 @@ int imprimeTabSimbolos(Tab_simb *);
 
 int insereTipo(Tab_simb *, Tipo);
 
+int removeFPSimbolos(Tab_simb *, Simbolo *);
+
 int inserePassageParam(Tab_simb *, Passagem, int);
 
 int setaDeslocamentoParam(Tab_simb *, int);
+
+int insereParamLista(Simbolo  *, Tipo , Passagem , int );
 
